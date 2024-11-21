@@ -1,0 +1,10 @@
+entities for products:
+
+name:str
+price:range??
+quantity:
+variants:[inches??price]
+review??
+color:string
+
+Work more with laptop or tablet
