@@ -18,7 +18,6 @@ const customResponse_1 = require("../utils/customResponse");
 const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, category, description, quantity, price } = req.body;
-        console.log(req.body);
         if (!name || !category || !quantity || !price) {
             throw new customErrors_1.BadRequest('Please supply Product Name, Category, Quantity, and Price');
         }
@@ -69,19 +68,26 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.updateProduct = updateProduct;
 const updateProductImage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // const { id } = req.params;
-        // const product = await BaseProduct.findById(id);
-        // if (!product) {
-        //   throw new NotFound('Product not found');
-        // }
+        const { id } = req.params;
+        const product = yield products_1.BaseProduct.findById(id);
+        if (!product) {
+            throw new customErrors_1.NotFound('Product not found');
+        }
         const uploadedImages = req.body.uploadedImages;
         if (!uploadedImages || uploadedImages.length === 0) {
-            return res.status(400).send('No images uploaded');
+            throw new customErrors_1.BadRequest("No Image Uploaded");
         }
-        // Use the image URLs or data as needed
-        // For example, save each `uploadedImage.secure_url` to your database
         const imageUrls = uploadedImages.map((image) => image.secure_url);
-        res.status(200).json({ message: 'Images updated successfully', imageUrls });
+        const updatedProduct = yield products_1.BaseProduct.findByIdAndUpdate(product._id, {
+            $push: {
+                images: {
+                    $each: imageUrls
+                }
+            }
+        }, {
+            new: true
+        });
+        res.json((0, customResponse_1.successResponse)(updatedProduct, 201, "Images added to product"));
     }
     catch (error) {
         console.log('error uploading image');

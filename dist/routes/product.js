@@ -14,7 +14,7 @@ router.post('/product/add', adminAuthentication_1.default, products_1.addProduct
 // Route to edit a product by ID
 router.put('/product/:id', adminAuthentication_1.default, products_1.updateProduct);
 // Route to edit a product image by ID (with max 10 images)
-router.put('/product/image/:id', uploadPictures_1.upload.array('images', 10), uploadPictures_1.uploadAndConvertToWebp, products_1.updateProductImage);
+router.put('/product/image/:id', uploadPictures_1.upload.array('images'), uploadPictures_1.uploadAndConvertToWebp, products_1.updateProductImage);
 // Route to delete a product by ID
 router.delete('/products/:id', adminAuthentication_1.default, products_1.deleteProduct);
 // Route to get a single product by ID

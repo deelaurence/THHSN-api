@@ -7,6 +7,7 @@ class Store {
     public config: { [key: string]: any } = {};
     private genAI: GoogleGenerativeAI;
     private geminiKey: string;
+    maxImageToBeUploaded:number=4
     // Constructor
     constructor() {
         this.geminiKey = process.env.GEMINI_KEY||"";

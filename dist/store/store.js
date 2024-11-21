@@ -20,6 +20,7 @@ class Store {
     constructor() {
         this.dataStore = {};
         this.config = {};
+        this.maxImageToBeUploaded = 4;
         this.optimizeImageTOWebp = (buffer) => __awaiter(this, void 0, void 0, function* () {
             try {
                 // console.log(buffer, fileName)
