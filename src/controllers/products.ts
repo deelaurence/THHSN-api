@@ -11,9 +11,9 @@ import {v2 as cloudinary} from 'cloudinary'
 // Create a new product
 const addProduct = async (req: Request, res: Response) => {
   try {
-    const { name, category, description, quantity, price } = req.body;
-    if (!name || !category || !quantity || !price) {
-      throw new BadRequest('Please supply Product Name, Category, Quantity, and Price');
+    const { name, category, description,  } = req.body;
+    if (!name || !category ) {
+      throw new BadRequest('Please supply Product Name and Category');
     }
 
     const newProduct: IProductType = await BaseProduct.create(req.body);
@@ -67,6 +67,31 @@ const updateProduct = async (req: Request, res: Response) => {
   }
 };
 
+
+// Update a product by ID
+const updateProductVariation = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+
+    const updatedProduct = await BaseProduct.findByIdAndUpdate(id, {variations:updateData}, {
+      new: true,
+    });
+
+    
+    if (!updatedProduct) {
+      throw new NotFound('Product not found for update');
+    }
+    res.status(StatusCodes.OK).json(successResponse(updatedProduct, StatusCodes.OK, 'Product updated successfully'));
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError(error.message));
+  }
+};
+
+
+//Update product Image
 const updateProductImage = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -128,5 +153,6 @@ export {
   getProduct,
   updateProduct,
   updateProductImage,
+  updateProductVariation,
   deleteProduct,
 };

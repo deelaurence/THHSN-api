@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.updateProductImage = exports.updateProduct = exports.getProduct = exports.addProduct = void 0;
+exports.deleteProduct = exports.updateProductVariation = exports.updateProductImage = exports.updateProduct = exports.getProduct = exports.addProduct = void 0;
 const products_1 = require("../models/products");
 const http_status_codes_1 = require("http-status-codes");
 const customErrors_1 = require("../errors/customErrors");
@@ -17,9 +17,9 @@ const customResponse_1 = require("../utils/customResponse");
 // Create a new product
 const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, category, description, quantity, price } = req.body;
-        if (!name || !category || !quantity || !price) {
-            throw new customErrors_1.BadRequest('Please supply Product Name, Category, Quantity, and Price');
+        const { name, category, description, } = req.body;
+        if (!name || !category) {
+            throw new customErrors_1.BadRequest('Please supply Product Name and Category');
         }
         const newProduct = yield products_1.BaseProduct.create(req.body);
         res.status(http_status_codes_1.StatusCodes.CREATED).json((0, customResponse_1.successResponse)(newProduct, http_status_codes_1.StatusCodes.CREATED, 'Product created successfully'));
@@ -66,6 +66,26 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.updateProduct = updateProduct;
+// Update a product by ID
+const updateProductVariation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const updateData = req.body;
+        const updatedProduct = yield products_1.BaseProduct.findByIdAndUpdate(id, { variations: updateData }, {
+            new: true,
+        });
+        if (!updatedProduct) {
+            throw new customErrors_1.NotFound('Product not found for update');
+        }
+        res.status(http_status_codes_1.StatusCodes.OK).json((0, customResponse_1.successResponse)(updatedProduct, http_status_codes_1.StatusCodes.OK, 'Product updated successfully'));
+    }
+    catch (error) {
+        console.error(error.message);
+        res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(new customErrors_1.InternalServerError(error.message));
+    }
+});
+exports.updateProductVariation = updateProductVariation;
+//Update product Image
 const updateProductImage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;

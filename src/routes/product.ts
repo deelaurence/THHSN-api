@@ -4,6 +4,7 @@ import {
   addProduct, 
   updateProduct, 
   updateProductImage, 
+  updateProductVariation,
   deleteProduct, 
   getProduct, 
 } from '../controllers/products'; // Adjust the path as needed
@@ -19,6 +20,8 @@ router.post('/product/add', adminAuth, addProduct);
 
 // Route to edit a product by ID
 router.put('/product/:id', adminAuth, updateProduct);
+
+router.put('/product/variant/:id', adminAuth, updateProductVariation);
 
 // Route to edit a product image by ID (with max 10 images)
 router.put('/product/image/:id', upload.array('images'), uploadAndConvertToWebp, updateProductImage);

@@ -1,5 +1,37 @@
 import mongoose, { Schema, model, Document } from 'mongoose';
 
+
+[
+  {
+      "name": "length",
+      "variations": [
+          {
+              "variation": "timer",
+              "price": 349,
+              "quantity": 67
+          },
+          {
+              "variation": "45 inches",
+              "price": 500,
+              "quantity": 4
+          }
+      ]
+  }
+]
+
+
+interface VariationLevelOne{
+  variation:string;
+  price:number;
+  quantity:number;
+}
+
+interface VariationLevelTwo{
+  name:string;
+  variations:VariationLevelOne[]
+}
+
+
 interface IProductType extends Document {
   name: string;
   category: string;
@@ -7,6 +39,7 @@ interface IProductType extends Document {
   quantity:number;
   price:number;
   images:string[]
+  variations:VariationLevelTwo[]
 }
 
 const ProductSchema = new Schema<IProductType>({
@@ -21,16 +54,11 @@ const ProductSchema = new Schema<IProductType>({
     description: {
       type: String,
     },
-    quantity:{
-        type:Number,
-        required:[true,"Supply Product qunatity in stock"]
-    },
-    price:{
-        type:Number,
-        required:[true,"Supply Product base price"]
-    },
     images:{
         type:[],
+    },
+    variations:{
+      type:[]
     }
   },
 );

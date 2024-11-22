@@ -13,6 +13,7 @@ const router = express_1.default.Router();
 router.post('/product/add', adminAuthentication_1.default, products_1.addProduct);
 // Route to edit a product by ID
 router.put('/product/:id', adminAuthentication_1.default, products_1.updateProduct);
+router.put('/product/variant/:id', adminAuthentication_1.default, products_1.updateProductVariation);
 // Route to edit a product image by ID (with max 10 images)
 router.put('/product/image/:id', uploadPictures_1.upload.array('images'), uploadPictures_1.uploadAndConvertToWebp, products_1.updateProductImage);
 // Route to delete a product by ID
