@@ -9,7 +9,7 @@ interface IUser extends Document {
   name: string;
   firstName:string;
   lastName:string;
-  verified:boolean;
+  verified:boolean; 
   // _id?:any;
   email?: {
     type: string;

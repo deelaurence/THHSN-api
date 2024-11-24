@@ -41,6 +41,21 @@ const getProduct = async (req: Request, res: Response) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError(error.message));
   }
 };
+// Get a product by ID
+const getProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await BaseProduct.find({
+      images: {$exists:true, $not: {$size:0}},
+      variations: {$exists:true, $not: {$size:0}},
+    });
+
+
+    res.status(StatusCodes.OK).json(successResponse(products, StatusCodes.OK, 'Product retrieved successfully'));
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError(error.message));
+  }
+};
 
 // Update a product by ID
 const updateProduct = async (req: Request, res: Response) => {
@@ -155,4 +170,5 @@ export {
   updateProductImage,
   updateProductVariation,
   deleteProduct,
+  getProducts
 };

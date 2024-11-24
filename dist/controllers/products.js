@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.updateProductVariation = exports.updateProductImage = exports.updateProduct = exports.getProduct = exports.addProduct = void 0;
+exports.getProducts = exports.deleteProduct = exports.updateProductVariation = exports.updateProductImage = exports.updateProduct = exports.getProduct = exports.addProduct = void 0;
 const products_1 = require("../models/products");
 const http_status_codes_1 = require("http-status-codes");
 const customErrors_1 = require("../errors/customErrors");
@@ -46,6 +46,21 @@ const getProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getProduct = getProduct;
+// Get a product by ID
+const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const products = yield products_1.BaseProduct.find({
+            images: { $exists: true, $not: { $size: 0 } },
+            variations: { $exists: true, $not: { $size: 0 } },
+        });
+        res.status(http_status_codes_1.StatusCodes.OK).json((0, customResponse_1.successResponse)(products, http_status_codes_1.StatusCodes.OK, 'Product retrieved successfully'));
+    }
+    catch (error) {
+        console.error(error.message);
+        res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(new customErrors_1.InternalServerError(error.message));
+    }
+});
+exports.getProducts = getProducts;
 // Update a product by ID
 const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
