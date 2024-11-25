@@ -2,7 +2,7 @@ require("dotenv").config();
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import sharp from "sharp";
 
-class Store {
+class Store { 
     private dataStore: { [key: string]: any } = {};
     public config: { [key: string]: any } = {};
     private genAI: GoogleGenerativeAI;

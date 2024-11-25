@@ -70,7 +70,7 @@ app.use('/v1/profile', profileRoutes)
 app.use('/v1/payment', paymentRoute)
 app.use("/v1/docs", swaggerUI.serve, swaggerUI.setup(require('./docs')));
 app.set('trust proxy',1);    
-app.use("*",(req,res)=>{ 
+app.use("*",(req,res)=>{  
   console.log("Route not found")
   res.status(404).json(new NotFound("Requested resource not found"))
 })

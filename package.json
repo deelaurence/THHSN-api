@@ -5,8 +5,7 @@
   "main": "dist/app.js",
   "scripts": {
     "compile": "tsc --watch",
-    "dev": "nodemon app.js",
-    "dev2": "concurrently \"tsc --watch\" \"nodemon dist/app.js\"",
+    "dev": "concurrently \"tsc --watch\" \"nodemon dist/app.js\"",
     "test": "jest --verbose"
   },
   "keywords": [],
