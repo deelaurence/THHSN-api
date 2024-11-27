@@ -48,7 +48,7 @@ const getProducts = async (req: Request, res: Response) => {
     const products = await BaseProduct.find({
       images: {$exists:true, $not: {$size:0}},
       variations: {$exists:true, $not: {$size:0}},
-    });
+    }).sort({_id:-1})
 
 
     res.status(StatusCodes.OK).json(successResponse(products, StatusCodes.OK, 'Product retrieved successfully'));
