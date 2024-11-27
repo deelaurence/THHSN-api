@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProducts = exports.deleteProduct = exports.updateProductVariation = exports.updateProductImage = exports.updateProduct = exports.getProduct = exports.addProduct = void 0;
+exports.getProducts = exports.deleteProduct = exports.updateProductVariation = exports.updateProductImage = exports.updateProductNameAndDescription = exports.getProduct = exports.addProduct = void 0;
 const products_1 = require("../models/products");
 const http_status_codes_1 = require("http-status-codes");
 const customErrors_1 = require("../errors/customErrors");
@@ -46,7 +46,7 @@ const getProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getProduct = getProduct;
-// Get a product by ID
+// Get products that all fields are completed
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const products = yield products_1.BaseProduct.find({
@@ -61,12 +61,19 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getProducts = getProducts;
-// Update a product by ID
-const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// Update product name and description
+const updateProductNameAndDescription = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const updateData = req.body;
-        const updatedProduct = yield products_1.BaseProduct.findByIdAndUpdate(id, updateData, {
+        const { name, category, description, } = req.body;
+        if (!name || !category) {
+            throw new customErrors_1.BadRequest('Please supply Product Name and Category');
+        }
+        const updatedProduct = yield products_1.BaseProduct.findByIdAndUpdate(id, {
+            name,
+            category,
+            description
+        }, {
             new: true,
             runValidators: true,
         });
@@ -80,8 +87,8 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(new customErrors_1.InternalServerError(error.message));
     }
 });
-exports.updateProduct = updateProduct;
-// Update a product by ID
+exports.updateProductNameAndDescription = updateProductNameAndDescription;
+// Update a product variation
 const updateProductVariation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
@@ -114,11 +121,12 @@ const updateProductImage = (req, res) => __awaiter(void 0, void 0, void 0, funct
         }
         const imageUrls = uploadedImages.map((image) => image.secure_url);
         const updatedProduct = yield products_1.BaseProduct.findByIdAndUpdate(product._id, {
-            $push: {
-                images: {
-                    $each: imageUrls
-                }
-            }
+            // $push:{
+            //   images:{
+            //     $each:imageUrls
+            //   }
+            // }
+            images: imageUrls
         }, {
             new: true
         });

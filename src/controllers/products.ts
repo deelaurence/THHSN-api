@@ -41,7 +41,7 @@ const getProduct = async (req: Request, res: Response) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError(error.message));
   }
 };
-// Get a product by ID
+// Get products that all fields are completed
 const getProducts = async (req: Request, res: Response) => {
   try {
     const products = await BaseProduct.find({
@@ -57,24 +57,25 @@ const getProducts = async (req: Request, res: Response) => {
   }
 };
 
-// Update a product by ID
-const updateProduct = async (req: Request, res: Response) => {
+// Update product name and description
+const updateProductNameAndDescription = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const updateData = req.body;
-
-
-    const updatedProduct = await BaseProduct.findByIdAndUpdate(id, updateData, {
+    const { name, category, description,  } = req.body;
+    if (!name || !category ) {
+      throw new BadRequest('Please supply Product Name and Category');
+    }
+    const updatedProduct = await BaseProduct.findByIdAndUpdate(id, {
+      name,
+      category,
+      description
+    }, {
       new: true,
       runValidators: true,
     });
-
-    
     if (!updatedProduct) {
       throw new NotFound('Product not found for update');
     }
-
-
     res.status(StatusCodes.OK).json(successResponse(updatedProduct, StatusCodes.OK, 'Product updated successfully'));
   } catch (error: any) {
     console.error(error.message);
@@ -83,7 +84,7 @@ const updateProduct = async (req: Request, res: Response) => {
 };
 
 
-// Update a product by ID
+// Update a product variation
 const updateProductVariation = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -126,11 +127,12 @@ const updateProductImage = async (req: Request, res: Response) => {
 
     const updatedProduct = await BaseProduct.findByIdAndUpdate(
       product._id,{
-        $push:{
-          images:{
-            $each:imageUrls
-          }
-        }
+        // $push:{
+        //   images:{
+        //     $each:imageUrls
+        //   }
+        // }
+        images:imageUrls
       },{
         new:true
       }
@@ -166,7 +168,7 @@ const deleteProduct = async (req: Request, res: Response) => {
 export {
   addProduct,
   getProduct,
-  updateProduct,
+  updateProductNameAndDescription,
   updateProductImage,
   updateProductVariation,
   deleteProduct,

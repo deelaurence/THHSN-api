@@ -2,7 +2,7 @@
 import express from 'express';
 import { 
   addProduct, 
-  updateProduct, 
+  updateProductNameAndDescription, 
   updateProductImage, 
   updateProductVariation,
   deleteProduct, 
@@ -20,7 +20,7 @@ const router = express.Router();
 router.post('/product/add', adminAuth, addProduct);  
 
 // Route to edit a product by ID
-router.put('/product/:id', adminAuth, updateProduct);
+router.put('/product/name-and-description/:id', adminAuth, updateProductNameAndDescription);
 
 router.put('/product/variant/:id', adminAuth, updateProductVariation);
 
