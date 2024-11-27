@@ -15,7 +15,8 @@ const addProduct = async (req: Request, res: Response) => {
     if (!name || !category ) {
       throw new BadRequest('Please supply Product Name and Category');
     }
-
+    const productExists:IProductType|null = await BaseProduct.findOne({name})
+    if(productExists) throw new BadRequest("Product name already exusting, Do you mind editing instead?")
     const newProduct: IProductType = await BaseProduct.create(req.body);
 
     res.status(StatusCodes.CREATED).json(successResponse(newProduct, StatusCodes.CREATED, 'Product created successfully'));

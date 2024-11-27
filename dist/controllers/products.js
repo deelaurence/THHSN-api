@@ -21,6 +21,9 @@ const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!name || !category) {
             throw new customErrors_1.BadRequest('Please supply Product Name and Category');
         }
+        const productExists = yield products_1.BaseProduct.findOne({ name });
+        if (productExists)
+            throw new customErrors_1.BadRequest("Product name already exusting, Do you mind editing instead?");
         const newProduct = yield products_1.BaseProduct.create(req.body);
         res.status(http_status_codes_1.StatusCodes.CREATED).json((0, customResponse_1.successResponse)(newProduct, http_status_codes_1.StatusCodes.CREATED, 'Product created successfully'));
     }
