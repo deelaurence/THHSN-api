@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import authRoutes from './routes/auth';
 import adminAuthRoutes from './routes/adminAuth';
 import productRoutes from './routes/product';
+import publicProductRoutes from './routes/publicProducts'
 import airoutes from './routes/Ai'
 const swaggerDocument = require('./swagger-output.json');
 import resumeRoutes from './routes/dataCollection'
@@ -64,6 +65,7 @@ app.use("/", googleRoutes);
 app.use('/v1/auth', authRoutes);
 app.use('/v1/admin/auth', adminAuthRoutes);
 app.use('/v1/admin/manage', productRoutes);
+app.use('/v1/public',publicProductRoutes)
 app.use('/v1/prompt', airoutes) 
 app.use('/v1/resume', resumeRoutes)
 app.use('/v1/profile', profileRoutes)

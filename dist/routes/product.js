@@ -20,5 +20,5 @@ router.put('/product/image/:id', uploadPictures_1.upload.array('images'), upload
 router.delete('/products/:id', adminAuthentication_1.default, products_1.deleteProduct);
 // Route to get a single product by ID
 router.get('/products/:id', products_1.getProduct);
-router.get('/products', products_1.getProducts);
+router.get('/products', adminAuthentication_1.default, products_1.getProducts);
 exports.default = router;

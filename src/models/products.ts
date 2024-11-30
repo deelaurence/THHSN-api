@@ -28,7 +28,7 @@ interface VariationLevelOne{
 
 interface VariationLevelTwo{
   name:string;
-  variations:VariationLevelOne[]
+  variations:VariationLevelOne[];
 }
 
 
@@ -38,8 +38,9 @@ interface IProductType extends Document {
   description:string;
   quantity:number;
   price:number;
-  images:string[]
-  variations:VariationLevelTwo[]
+  bestSeller:boolean;
+  images:string[];
+  variations:VariationLevelTwo[];
 }
 
 const ProductSchema = new Schema<IProductType>({
@@ -53,6 +54,10 @@ const ProductSchema = new Schema<IProductType>({
     },
     description: {
       type: String,
+    },
+    bestSeller:{
+      type:Boolean,
+      default:false,
     },
     images:{
         type:[],

@@ -34,6 +34,6 @@ router.delete('/products/:id', adminAuth, deleteProduct);
 router.get('/products/:id', getProduct);
 
 
-router.get('/products', getProducts);
+router.get('/products',adminAuth, getProducts);
 
 export default router;

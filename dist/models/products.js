@@ -31,6 +31,10 @@ const ProductSchema = new mongoose_1.Schema({
     description: {
         type: String,
     },
+    bestSeller: {
+        type: Boolean,
+        default: false,
+    },
     images: {
         type: [],
     },
