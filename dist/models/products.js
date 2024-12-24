@@ -35,6 +35,10 @@ const ProductSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
+    newArrival: {
+        type: Boolean,
+        default: false,
+    },
     images: {
         type: [],
     },

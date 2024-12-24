@@ -3,6 +3,7 @@ import express from 'express';
 import { 
   addProduct, 
   updateProductNameAndDescription, 
+  updateProductBestsellerAndNewArrival,
   updateProductImage, 
   updateProductVariation,
   deleteProduct, 
@@ -23,6 +24,8 @@ router.post('/product/add', adminAuth, addProduct);
 router.put('/product/name-and-description/:id', adminAuth, updateProductNameAndDescription);
 
 router.put('/product/variant/:id', adminAuth, updateProductVariation);
+
+router.put('/product/bestseller-newarrival/:id', adminAuth, updateProductBestsellerAndNewArrival);
 
 // Route to edit a product image by ID (with max 10 images)
 router.put('/product/image/:id', upload.array('images'), uploadAndConvertToWebp, updateProductImage);

@@ -39,6 +39,7 @@ interface IProductType extends Document {
   quantity:number;
   price:number;
   bestSeller:boolean;
+  newArrival:boolean;
   images:string[];
   variations:VariationLevelTwo[];
 }
@@ -56,6 +57,10 @@ const ProductSchema = new Schema<IProductType>({
       type: String,
     },
     bestSeller:{
+      type:Boolean,
+      default:false,
+    },
+    newArrival:{
       type:Boolean,
       default:false,
     },

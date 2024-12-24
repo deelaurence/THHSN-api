@@ -60,7 +60,7 @@ const getProducts = async (req: Request, res: Response) => {
 
 // Update product name and description
 const updateProductNameAndDescription = async (req: Request, res: Response) => {
-  try {
+  try { 
     const { id } = req.params;
     const { name, category, description,  } = req.body;
     if (!name || !category ) {
@@ -148,6 +148,33 @@ const updateProductImage = async (req: Request, res: Response) => {
 };
 
 
+// Update product bestseller and newArrival status
+const updateProductBestsellerAndNewArrival = async (req: Request, res: Response) => {
+  try { 
+    const { id } = req.params;
+    const { bestSeller, newArrival } = req.body;
+    if (bestSeller === undefined && newArrival === undefined) {
+      throw new BadRequest('Please supply Bestseller and New Arrival');
+    }
+    console.log(req.body)
+    const updatedProduct = await BaseProduct.findByIdAndUpdate(id, {
+      bestSeller,
+      newArrival
+    }, {
+      new: true,
+      runValidators: true,
+    });
+    if (!updatedProduct) {
+      throw new NotFound('Product not found for update');
+    }
+    res.status(StatusCodes.OK).json(successResponse(updatedProduct, StatusCodes.OK, 'Product updated successfully'));
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError(error.message));
+  }
+};
+
+
 // Delete a product by ID
 const deleteProduct = async (req: Request, res: Response) => {
   try {
@@ -170,6 +197,7 @@ export {
   addProduct,
   getProduct,
   updateProductNameAndDescription,
+  updateProductBestsellerAndNewArrival,
   updateProductImage,
   updateProductVariation,
   deleteProduct,
