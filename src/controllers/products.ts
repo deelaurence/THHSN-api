@@ -156,7 +156,6 @@ const updateProductBestsellerAndNewArrival = async (req: Request, res: Response)
     if (bestSeller === undefined && newArrival === undefined) {
       throw new BadRequest('Please supply Bestseller and New Arrival');
     }
-    console.log(req.body)
     const updatedProduct = await BaseProduct.findByIdAndUpdate(id, {
       bestSeller,
       newArrival
@@ -174,6 +173,31 @@ const updateProductBestsellerAndNewArrival = async (req: Request, res: Response)
   }
 };
 
+
+// Choose bestseller and newArrival cover image
+const bestsellerAndNewArrivalCoverImage = async (req: Request, res: Response) => {
+  try { 
+    const { id } = req.params;
+    const { coverImage } = req.body;
+    if (coverImage === undefined) {
+      throw new BadRequest('Please supply Image');
+    }
+    
+    const updatedProduct = await BaseProduct.findByIdAndUpdate(id, {
+      coverImage
+    },{
+      new: true,
+      runValidators: true,
+    });
+    if (!updatedProduct) {
+      throw new NotFound('Product not found for update');
+    }
+    res.status(StatusCodes.OK).json(successResponse(updatedProduct, StatusCodes.OK, 'Product updated successfully'));
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError(error.message));
+  }
+};
 
 // Delete a product by ID
 const deleteProduct = async (req: Request, res: Response) => {
@@ -198,6 +222,7 @@ export {
   getProduct,
   updateProductNameAndDescription,
   updateProductBestsellerAndNewArrival,
+  bestsellerAndNewArrivalCoverImage,
   updateProductImage,
   updateProductVariation,
   deleteProduct,

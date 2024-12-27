@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProducts = exports.deleteProduct = exports.updateProductVariation = exports.updateProductImage = exports.updateProductBestsellerAndNewArrival = exports.updateProductNameAndDescription = exports.getProduct = exports.addProduct = void 0;
+exports.getProducts = exports.deleteProduct = exports.updateProductVariation = exports.updateProductImage = exports.bestsellerAndNewArrivalCoverImage = exports.updateProductBestsellerAndNewArrival = exports.updateProductNameAndDescription = exports.getProduct = exports.addProduct = void 0;
 const products_1 = require("../models/products");
 const http_status_codes_1 = require("http-status-codes");
 const customErrors_1 = require("../errors/customErrors");
@@ -150,7 +150,6 @@ const updateProductBestsellerAndNewArrival = (req, res) => __awaiter(void 0, voi
         if (bestSeller === undefined && newArrival === undefined) {
             throw new customErrors_1.BadRequest('Please supply Bestseller and New Arrival');
         }
-        console.log(req.body);
         const updatedProduct = yield products_1.BaseProduct.findByIdAndUpdate(id, {
             bestSeller,
             newArrival
@@ -169,6 +168,31 @@ const updateProductBestsellerAndNewArrival = (req, res) => __awaiter(void 0, voi
     }
 });
 exports.updateProductBestsellerAndNewArrival = updateProductBestsellerAndNewArrival;
+// Choose bestseller and newArrival cover image
+const bestsellerAndNewArrivalCoverImage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const { coverImage } = req.body;
+        if (coverImage === undefined) {
+            throw new customErrors_1.BadRequest('Please supply Image');
+        }
+        const updatedProduct = yield products_1.BaseProduct.findByIdAndUpdate(id, {
+            coverImage
+        }, {
+            new: true,
+            runValidators: true,
+        });
+        if (!updatedProduct) {
+            throw new customErrors_1.NotFound('Product not found for update');
+        }
+        res.status(http_status_codes_1.StatusCodes.OK).json((0, customResponse_1.successResponse)(updatedProduct, http_status_codes_1.StatusCodes.OK, 'Product updated successfully'));
+    }
+    catch (error) {
+        console.error(error.message);
+        res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(new customErrors_1.InternalServerError(error.message));
+    }
+});
+exports.bestsellerAndNewArrivalCoverImage = bestsellerAndNewArrivalCoverImage;
 // Delete a product by ID
 const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

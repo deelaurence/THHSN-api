@@ -15,6 +15,7 @@ router.post('/product/add', adminAuthentication_1.default, products_1.addProduct
 router.put('/product/name-and-description/:id', adminAuthentication_1.default, products_1.updateProductNameAndDescription);
 router.put('/product/variant/:id', adminAuthentication_1.default, products_1.updateProductVariation);
 router.put('/product/bestseller-newarrival/:id', adminAuthentication_1.default, products_1.updateProductBestsellerAndNewArrival);
+router.put('/product/bestseller-newarrival-coverimage/:id', adminAuthentication_1.default, products_1.bestsellerAndNewArrivalCoverImage);
 // Route to edit a product image by ID (with max 10 images)
 router.put('/product/image/:id', uploadPictures_1.upload.array('images'), uploadPictures_1.uploadAndConvertToWebp, products_1.updateProductImage);
 // Route to delete a product by ID

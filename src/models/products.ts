@@ -38,6 +38,7 @@ interface IProductType extends Document {
   description:string;
   quantity:number;
   price:number;
+  coverImage:string;
   bestSeller:boolean;
   newArrival:boolean;
   images:string[];
@@ -63,6 +64,9 @@ const ProductSchema = new Schema<IProductType>({
     newArrival:{
       type:Boolean,
       default:false,
+    },
+    coverImage:{
+      type:String,
     },
     images:{
         type:[],

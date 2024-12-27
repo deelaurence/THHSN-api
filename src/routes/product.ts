@@ -4,6 +4,7 @@ import {
   addProduct, 
   updateProductNameAndDescription, 
   updateProductBestsellerAndNewArrival,
+  bestsellerAndNewArrivalCoverImage,
   updateProductImage, 
   updateProductVariation,
   deleteProduct, 
@@ -26,6 +27,8 @@ router.put('/product/name-and-description/:id', adminAuth, updateProductNameAndD
 router.put('/product/variant/:id', adminAuth, updateProductVariation);
 
 router.put('/product/bestseller-newarrival/:id', adminAuth, updateProductBestsellerAndNewArrival);
+
+router.put('/product/bestseller-newarrival-coverimage/:id', adminAuth, bestsellerAndNewArrivalCoverImage);
 
 // Route to edit a product image by ID (with max 10 images)
 router.put('/product/image/:id', upload.array('images'), uploadAndConvertToWebp, updateProductImage);

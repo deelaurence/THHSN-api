@@ -39,6 +39,9 @@ const ProductSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
+    coverImage: {
+        type: String,
+    },
     images: {
         type: [],
     },
