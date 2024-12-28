@@ -52,29 +52,10 @@ exports.getProduct = getProduct;
 // Get products that all fields are completed
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const referer = req.headers.referer ? req.headers.referer.replace(/\/$/, '') : '';
-        const products = yield products_1.BaseProduct.aggregate([
-            {
-                $match: {
-                    images: { $exists: true, $not: { $size: 0 } },
-                    variations: { $exists: true, $not: { $size: 0 } },
-                },
-            },
-            {
-                $sort: { _id: -1 },
-            },
-            {
-                $addFields: {
-                    coverImage: {
-                        $cond: {
-                            if: { $ifNull: ["$coverImage", false] }, // Check if coverImage exists
-                            then: { $concat: [referer, "$coverImage"] }, // Concatenate prefix
-                            else: null, // Leave it as null if not present
-                        },
-                    },
-                },
-            },
-        ]);
+        const products = yield products_1.BaseProduct.find({
+            images: { $exists: true, $not: { $size: 0 } },
+            variations: { $exists: true, $not: { $size: 0 } },
+        }).sort({ _id: -1 });
         res.status(http_status_codes_1.StatusCodes.OK).json((0, customResponse_1.successResponse)(products, http_status_codes_1.StatusCodes.OK, 'Product retrieved successfully'));
     }
     catch (error) {

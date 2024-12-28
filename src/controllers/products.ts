@@ -45,32 +45,11 @@ const getProduct = async (req: Request, res: Response) => {
 // Get products that all fields are completed
 const getProducts = async (req: Request, res: Response) => {
   try {
-    const referer = req.headers.referer ? req.headers.referer.replace(/\/$/, '') : '';
-    const products = await BaseProduct.aggregate([
-      {
-        $match: {
-          images: { $exists: true, $not: { $size: 0 } },
-          variations: { $exists: true, $not: { $size: 0 } },
-        },
-      },
-      {
-        $sort: { _id: -1 },
-      },
-      {
-        $addFields: {
-          coverImage: {
-            $cond: {
-              if: { $ifNull: ["$coverImage", false] }, // Check if coverImage exists
-              then: { $concat: [referer, "$coverImage"] }, // Concatenate prefix
-              else: null, // Leave it as null if not present
-            },
-          },
-        },
-      },
-    ]);
-    
+    const products = await BaseProduct.find({
+      images: {$exists:true, $not: {$size:0}},
+      variations: {$exists:true, $not: {$size:0}},
+    }).sort({_id:-1})
 
-    
     
     res.status(StatusCodes.OK).json(successResponse(products, StatusCodes.OK, 'Product retrieved successfully'));
   } catch (error: any) {
