@@ -58,6 +58,28 @@ const getProducts = async (req: Request, res: Response) => {
   }
 };
 
+
+
+const getProductDrafts = async (req: Request, res: Response) => {
+  try {
+    const drafts = await BaseProduct.find({
+      $or: [
+        { images: { $exists: false } },            // Missing images
+        { images: { $size: 0 } },                  // Empty images array
+        { variations: { $exists: false } },        // Missing variations
+        { variations: { $size: 0 } },              // Empty variations array
+      ]
+    }).sort({ _id: -1 }); // Sorting by newest
+
+    res.status(StatusCodes.OK).json(successResponse(drafts, StatusCodes.OK, 'Drafts retrieved successfully'));
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError(error.message));
+  }
+};
+
+
+
 // Update product name and description
 const updateProductNameAndDescription = async (req: Request, res: Response) => {
   try { 
@@ -220,6 +242,7 @@ const deleteProduct = async (req: Request, res: Response) => {
 export {
   addProduct,
   getProduct,
+  getProductDrafts,
   updateProductNameAndDescription,
   updateProductBestsellerAndNewArrival,
   bestsellerAndNewArrivalCoverImage,

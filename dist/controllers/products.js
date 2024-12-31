@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProducts = exports.deleteProduct = exports.updateProductVariation = exports.updateProductImage = exports.bestsellerAndNewArrivalCoverImage = exports.updateProductBestsellerAndNewArrival = exports.updateProductNameAndDescription = exports.getProduct = exports.addProduct = void 0;
+exports.getProducts = exports.deleteProduct = exports.updateProductVariation = exports.updateProductImage = exports.bestsellerAndNewArrivalCoverImage = exports.updateProductBestsellerAndNewArrival = exports.updateProductNameAndDescription = exports.getProductDrafts = exports.getProduct = exports.addProduct = void 0;
 const products_1 = require("../models/products");
 const http_status_codes_1 = require("http-status-codes");
 const customErrors_1 = require("../errors/customErrors");
@@ -64,6 +64,24 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getProducts = getProducts;
+const getProductDrafts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const drafts = yield products_1.BaseProduct.find({
+            $or: [
+                { images: { $exists: false } }, // Missing images
+                { images: { $size: 0 } }, // Empty images array
+                { variations: { $exists: false } }, // Missing variations
+                { variations: { $size: 0 } }, // Empty variations array
+            ]
+        }).sort({ _id: -1 }); // Sorting by newest
+        res.status(http_status_codes_1.StatusCodes.OK).json((0, customResponse_1.successResponse)(drafts, http_status_codes_1.StatusCodes.OK, 'Drafts retrieved successfully'));
+    }
+    catch (error) {
+        console.error(error.message);
+        res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(new customErrors_1.InternalServerError(error.message));
+    }
+});
+exports.getProductDrafts = getProductDrafts;
 // Update product name and description
 const updateProductNameAndDescription = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

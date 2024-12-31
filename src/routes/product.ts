@@ -9,6 +9,7 @@ import {
   updateProductVariation,
   deleteProduct, 
   getProduct, 
+  getProductDrafts,
   getProducts
 } from '../controllers/products'; // Adjust the path as needed
 
@@ -42,4 +43,7 @@ router.get('/products/:id', getProduct);
 
 router.get('/products',adminAuth, getProducts);
 
+router.get('/products-draft',adminAuth, getProductDrafts);
+
+ 
 export default router;

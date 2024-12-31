@@ -23,4 +23,5 @@ router.delete('/products/:id', adminAuthentication_1.default, products_1.deleteP
 // Route to get a single product by ID
 router.get('/products/:id', products_1.getProduct);
 router.get('/products', adminAuthentication_1.default, products_1.getProducts);
+router.get('/products-draft', adminAuthentication_1.default, products_1.getProductDrafts);
 exports.default = router;
