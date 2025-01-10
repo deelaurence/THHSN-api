@@ -9,8 +9,11 @@ import {
   updateProductVariation,
   deleteProduct, 
   getProduct, 
+  setExchangeRate,
+  updateExchangeRate,
   getProductDrafts,
-  getProducts
+  getProducts,
+  getExchangeRate
 } from '../controllers/products'; // Adjust the path as needed
 
 import adminAuth from '../middleware/adminAuthentication';
@@ -21,6 +24,11 @@ const router = express.Router();
 
 // Route to add a new product
 router.post('/product/add', adminAuth, addProduct);  
+
+router.post('/exchange-rate/add', adminAuth, setExchangeRate);  
+router.put('/exchange-rate/update', adminAuth, updateExchangeRate);  
+
+
 
 // Route to edit a product by ID
 router.put('/product/name-and-description/:id', adminAuth, updateProductNameAndDescription);
@@ -39,6 +47,9 @@ router.delete('/products/:id', adminAuth, deleteProduct);
 
 // Route to get a single product by ID
 router.get('/products/:id', getProduct);
+
+
+
 
 
 router.get('/products',adminAuth, getProducts);

@@ -37,7 +37,7 @@ const http_1 = require("http");
 passport_1.default.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_ID,
     clientSecret: process.env.GOOGLE_SECRET,
-    callbackURL: "/auth/google/redirected",
+    callbackURL: "/google/redirected",
     passReqToCallback: true,
     scope: ["profile", "email"],
 }, 
@@ -112,7 +112,7 @@ route.get("/auth/google/onboard", (req, res) => {
     passport_1.default.authenticate("google", { scope: ["profile", "email"] })(req, serverResponse);
     res.status(200).json((0, customResponse_1.successResponse)({ redirect: serverResponse.getHeader("location") }, 200, 'You are being redirected'));
 });
-route.get("/auth/google/redirected", passport_1.default.authenticate("google", {
+route.get("/google/redirected", passport_1.default.authenticate("google", {
     successRedirect: "/success",
     failureRedirect: "/login",
 }));

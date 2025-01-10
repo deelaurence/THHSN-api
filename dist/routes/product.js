@@ -11,6 +11,8 @@ const uploadPictures_1 = require("../middleware/uploadPictures");
 const router = express_1.default.Router();
 // Route to add a new product
 router.post('/product/add', adminAuthentication_1.default, products_1.addProduct);
+router.post('/exchange-rate/add', adminAuthentication_1.default, products_1.setExchangeRate);
+router.put('/exchange-rate/update', adminAuthentication_1.default, products_1.updateExchangeRate);
 // Route to edit a product by ID
 router.put('/product/name-and-description/:id', adminAuthentication_1.default, products_1.updateProductNameAndDescription);
 router.put('/product/variant/:id', adminAuthentication_1.default, products_1.updateProductVariation);

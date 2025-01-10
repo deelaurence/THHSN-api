@@ -3,7 +3,9 @@ import { BaseProduct, IProductType } from '../models/products';
 import { StatusCodes } from 'http-status-codes';
 import { BadRequest, NotFound, InternalServerError } from '../errors/customErrors';
 import { successResponse } from '../utils/customResponse';
+
 import {v2 as cloudinary} from 'cloudinary'
+import { BaseExchangeRate } from '../models/exchangeRate';
 
 
 
@@ -15,8 +17,10 @@ const addProduct = async (req: Request, res: Response) => {
     if (!name || !category ) {
       throw new BadRequest('Please supply Product Name and Category');
     }
-    const productExists:IProductType|null = await BaseProduct.findOne({name})
-    if(productExists) throw new BadRequest("Product name already exusting, Do you mind editing instead?")
+    const productExists: IProductType | null = await BaseProduct.findOne({
+      name: { $regex: new RegExp(`^${name.trim()}$`, 'i') }
+    });
+    if (productExists) throw new BadRequest("Product name already existing, Do you mind editing instead?");
     const newProduct: IProductType = await BaseProduct.create(req.body);
 
     res.status(StatusCodes.CREATED).json(successResponse(newProduct, StatusCodes.CREATED, 'Product created successfully'));
@@ -25,6 +29,56 @@ const addProduct = async (req: Request, res: Response) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError(error.message));
   } 
 };
+
+const setExchangeRate = async (req: Request, res: Response) => {
+  try {
+    const { rate,currencyPair } = req.body;
+    if (!rate || !currencyPair ) {
+      throw new BadRequest('Please supply rate and currency pair');
+    }
+    const exchangeRate=await BaseExchangeRate.create({rate,currencyPair})
+
+    res.status(StatusCodes.CREATED).json(successResponse(exchangeRate, StatusCodes.CREATED, 'Exchange rate created successfully'));
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError(error.message));
+  } 
+};
+const updateExchangeRate = async (req: Request, res: Response) => {
+  try {
+    const { rate,currencyPair } = req.body;
+    if (!rate || !currencyPair ) {
+      throw new BadRequest('Please supply rate and currency pair');
+    }
+    const exchangeRate=await BaseExchangeRate.findOneAndUpdate({currencyPair},{rate},{new:true})
+
+    res.status(StatusCodes.CREATED).json(successResponse(exchangeRate, StatusCodes.CREATED, 'Exchange rate edited successfully'));
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError(error.message));
+  } 
+};
+
+
+
+
+// Get exchange rate
+const getExchangeRate = async (req: Request, res: Response) => {
+  try {
+    const { currencyPair } = req.params;
+    const rate = await BaseExchangeRate.findOne({currencyPair});
+
+    if (!rate) {
+      throw new NotFound('Exchange rate not found');
+    }
+
+    res.status(StatusCodes.OK).json(successResponse(rate, StatusCodes.OK, 'Rate retrieved successfully'));
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError(error.message));
+  }
+};
+
 
 // Get a product by ID
 const getProduct = async (req: Request, res: Response) => {
@@ -242,6 +296,9 @@ const deleteProduct = async (req: Request, res: Response) => {
 export {
   addProduct,
   getProduct,
+  setExchangeRate,
+  updateExchangeRate,
+  getExchangeRate,
   getProductDrafts,
   updateProductNameAndDescription,
   updateProductBestsellerAndNewArrival,

@@ -28,10 +28,10 @@ const customErrors_1 = require("../errors/customErrors");
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // #swagger.tags = ['Onboarding']
-        if (!req.body.name || !req.body.email) {
+        if (!req.body.firstName || !req.body.lastName || !req.body.email) {
             throw new customErrors_1.BadRequest("Supply Name, Password and Email");
         }
-        if (!(0, nameFormat_1.isValidNameInput)(req.body.name)) {
+        if (!(0, nameFormat_1.isValidNameInput)(`${req.body.firstName} ${req.body.Lastname}`)) {
             throw new customErrors_1.BadRequest("Enter both Lastname and Firstname, No compound names");
         }
         const existingUser = yield user_1.BaseUser.findOne({ email: req.body.email });
@@ -46,8 +46,8 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const token = newUser.generateJWT(process.env.JWT_SECRET);
         //send Email
         if (!req.body.verified) {
-            const link = `${process.env.SERVER_URL}/auth/verify-email/${token}`;
-            const mailStatus = yield (0, brevomail_1.sendBrevoMail)(req.body.email, req.body.name, link);
+            const link = `${process.env.SERVER_URL}/v1/auth/verify-email/${token}`;
+            const mailStatus = yield (0, brevomail_1.sendBrevoMail)(req.body.email, req.body.firstName, link);
             //If mail sending failed delete user from database
             if (mailStatus != 201) {
                 yield user_1.BaseUser.findOneAndDelete({ email: req.body.email });
@@ -92,7 +92,7 @@ const verifyEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const payload = jsonwebtoken_1.default.verify(token, secret);
         const user = yield user_1.BaseUser.findOneAndUpdate({ _id: payload.id }, { verified: true });
         // console.log(user?._id)
-        const clientUrl = `${process.env.CLIENT_URL}/auth/log-in`;
+        const clientUrl = `${process.env.CLIENT_URL}/account/verified`;
         res.status(http_status_codes_1.StatusCodes.PERMANENT_REDIRECT).redirect(clientUrl);
     }
     catch (error) {
@@ -117,8 +117,8 @@ const verifyEmailPasswordReset = (req, res) => __awaiter(void 0, void 0, void 0,
             }
         }
         const token = user.generateJWT(process.env.JWT_SECRET);
-        const link = `${process.env.SERVER_URL}/auth/verified-email-password-reset/${token}`;
-        const mailStatus = yield (0, brevomail_1.sendPasswordResetMail)(req.body.email, user.name, link);
+        const link = `${process.env.SERVER_URL}/v1/auth/verified-email-password-reset/${token}`;
+        const mailStatus = yield (0, brevomail_1.sendPasswordResetMail)(req.body.email, user.firstName, link);
         console.log(mailStatus);
         if (mailStatus != 201) {
             throw new customErrors_1.InternalServerError("Something went wrong while trying to send verification email, try again later");
@@ -145,7 +145,7 @@ const verifiedEmailPasswordReset = (req, res) => __awaiter(void 0, void 0, void 
         const userEmail = user === null || user === void 0 ? void 0 : user.email;
         res
             .status(http_status_codes_1.StatusCodes.PERMANENT_REDIRECT)
-            .redirect(`${process.env.CLIENT_URL}/auth/reset-password/?email=${encodeURIComponent(userEmail)}`);
+            .redirect(`${process.env.CLIENT_URL}/update/password/?email=${encodeURIComponent(userEmail)}`);
     }
     catch (error) {
         console.error(error);

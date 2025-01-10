@@ -47,6 +47,7 @@ const AdminSchema = new Schema<IAdmin>({
       type: Boolean,
       default: false,
     }
+
   },
 );
 

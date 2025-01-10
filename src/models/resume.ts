@@ -34,12 +34,6 @@ interface IResume extends Document {
   profession:string;
   firstName:string;
   lastName:string;
-  publicEmail?: {
-    type: string;
-    trim?: boolean|undefined;
-    lowercase?: boolean|undefined;
-    match?: [RegExp]|undefined;
-  };
   
   jobExperiences: {
     _id: mongoose.Types.ObjectId;
@@ -147,14 +141,7 @@ const resumeSchema = new Schema<IResume>({
   country: {
     type: String,
   },
-  publicEmail: {
-    type: String,
-    lowercase:true,
-    trim:true,
-    match: [
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-    ],
-  },
+  
   jobExperiences: [
     {
       jobTitle: {

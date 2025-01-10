@@ -1,12 +1,140 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    hello
-    <video controls src="/screen-capture.webm"></video>
-</body>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Verify Account</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Aboreto&family=Blinker:wght@100;200;300;400;600;700;800;900");
+      /* Reset styles to ensure consistent rendering across different email clients */
+      body,
+      #bodyTable {
+        margin: 0;
+        padding: 0;
+        width: 100% !important;
+      }
+
+      table {
+        border-collapse: collapse;
+      }
+
+      td {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: #333333;
+      }
+
+      /* Main email container */
+      #bodyTable {
+        background-color: #f4f4f4;
+      }
+
+      /* Email content */
+      #emailContainer {
+        background-color: white;
+        max-width: 600px;
+        /* background-color: #63c5da; */
+        margin: 0 auto;
+      }
+
+      /* Email header */
+      #header {
+        /* text-align: center; */
+        font-size: 20px;
+        padding-left: 40px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+      .img-cont {
+        height: 150px;
+        position: relative;
+        overflow: hidden;
+      }
+      .img-filter {
+        height: 100%;
+        width: 100%;
+        opacity: 0.5;
+        background:#333333;
+        position: absolute;
+        z-index: 12;
+      }
+      img {
+        border: 0;
+
+        outline: none;
+        width: 100%;
+        top: -105%;
+        text-decoration: none;
+        position: absolute;
+        z-index: 1;
+      }
+      h1 {
+        position: relative;
+        z-index: 2;
+        font-size: 30px;
+        color: #333333;
+        /* display: none; */
+        margin-bottom: -40px;
+      }
+
+      a{
+        color: #333333;
+      }
+      /* Email body */
+      #body {
+        padding: 40px;
+      }
+
+      
+
+      /* Email footer */
+      #footer {
+        background-color: #f9fafb;
+        padding: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: #999999;
+      }
+    </style>
+  </head>
+  <body>
+    <table id="bodyTable" cellpadding="0" cellspacing="0" border="0">
+      <div class="img-cont">
+        <img
+          src="https://res.cloudinary.com/dy5xob0gn/image/upload/v1735384866/THHSN/static/aicwt29igtixagqwvtxx.png"
+          alt=""
+          srcset=""
+        />
+        <div class="img-filter"></div>
+      </div>
+      <tr>
+        <td align="center">
+          <table id="emailContainer" cellpadding="0" cellspacing="0" border="0">
+            <!-- Email header -->
+            <tr>
+              <td id="header">
+                <h1>RESUME VANTAGE</h1>
+              </td>
+            </tr>
+            <!-- Email body -->
+            <tr>
+              <td id="body">
+                <p> 
+                  Hello ${name}, We are excited to have you on board, click on
+                  the button below to verify your email
+                </p>
+                <a class="button" href="${link}">Verify Email</a>
+              </td>
+            </tr>
+            <!-- Email footer -->
+            <tr>
+              <td id="footer">&copy; 2025 The Human Hair Shop. All rights reserved.</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
 </html>

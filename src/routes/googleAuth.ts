@@ -46,7 +46,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
-      callbackURL: "/auth/google/redirected",
+      callbackURL: "/google/redirected",
       passReqToCallback: true,
       scope: ["profile", "email"],
     },
@@ -136,7 +136,7 @@ route.get("/auth/google/onboard", (req, res) => {
 });
 
 route.get(
-  "/auth/google/redirected",
+  "/google/redirected",
   passport.authenticate("google", {
     successRedirect: "/success",
     failureRedirect: "/login",

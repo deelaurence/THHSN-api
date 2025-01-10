@@ -22,13 +22,12 @@ const register = async (req:Request, res:Response) => {
   try {
     
     // #swagger.tags = ['Onboarding']
-    
-    if (!req.body.name || !req.body.email) {
+    if (!req.body.firstName || !req.body.lastName || !req.body.email) {
       throw new BadRequest(
         "Supply Name, Password and Email"
       );
     }
-    if (!isValidNameInput(req.body.name)) {
+    if (!isValidNameInput(`${req.body.firstName} ${req.body.Lastname}`)) {
       throw new BadRequest(
         "Enter both Lastname and Firstname, No compound names"
       );
@@ -47,10 +46,10 @@ const register = async (req:Request, res:Response) => {
     
     //send Email
     if (!req.body.verified) {
-        const link = `${process.env.SERVER_URL}/auth/verify-email/${token}`;
+        const link = `${process.env.SERVER_URL}/v1/auth/verify-email/${token}`;
         const mailStatus = await sendBrevoMail(
         req.body.email,
-        req.body.name,
+        req.body.firstName,
         link
       );
 
@@ -106,7 +105,7 @@ const verifyEmail = async (req:Request, res:Response) => {
       { verified: true }
     );
     // console.log(user?._id)
-    const clientUrl = `${process.env.CLIENT_URL}/auth/log-in`;
+    const clientUrl = `${process.env.CLIENT_URL}/account/verified`;
     res.status(StatusCodes.PERMANENT_REDIRECT).redirect(clientUrl);
   } catch (error:any) {
     console.error(error);
@@ -133,10 +132,10 @@ const verifyEmailPasswordReset = async (req:Request, res:Response) => {
     }
 
     const token = user.generateJWT(process.env.JWT_SECRET as Secret);
-    const link = `${process.env.SERVER_URL}/auth/verified-email-password-reset/${token}`;
+    const link = `${process.env.SERVER_URL}/v1/auth/verified-email-password-reset/${token}`;
     const mailStatus = await sendPasswordResetMail(
       req.body.email,
-      user.name,
+      user.firstName,
       link
     );
     console.log(mailStatus);
@@ -171,7 +170,7 @@ const verifiedEmailPasswordReset = async (req:Request, res:Response) => {
     res
       .status(StatusCodes.PERMANENT_REDIRECT)
       .redirect(
-        `${process.env.CLIENT_URL}/auth/reset-password/?email=${encodeURIComponent(
+        `${process.env.CLIENT_URL}/update/password/?email=${encodeURIComponent(
           userEmail
         )}`
       );

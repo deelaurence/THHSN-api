@@ -9,11 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProducts = exports.deleteProduct = exports.updateProductVariation = exports.updateProductImage = exports.bestsellerAndNewArrivalCoverImage = exports.updateProductBestsellerAndNewArrival = exports.updateProductNameAndDescription = exports.getProductDrafts = exports.getProduct = exports.addProduct = void 0;
+exports.getProducts = exports.deleteProduct = exports.updateProductVariation = exports.updateProductImage = exports.bestsellerAndNewArrivalCoverImage = exports.updateProductBestsellerAndNewArrival = exports.updateProductNameAndDescription = exports.getProductDrafts = exports.getExchangeRate = exports.updateExchangeRate = exports.setExchangeRate = exports.getProduct = exports.addProduct = void 0;
 const products_1 = require("../models/products");
 const http_status_codes_1 = require("http-status-codes");
 const customErrors_1 = require("../errors/customErrors");
 const customResponse_1 = require("../utils/customResponse");
+const exchangeRate_1 = require("../models/exchangeRate");
 // Create a new product
 const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -21,9 +22,11 @@ const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!name || !category) {
             throw new customErrors_1.BadRequest('Please supply Product Name and Category');
         }
-        const productExists = yield products_1.BaseProduct.findOne({ name });
+        const productExists = yield products_1.BaseProduct.findOne({
+            name: { $regex: new RegExp(`^${name.trim()}$`, 'i') }
+        });
         if (productExists)
-            throw new customErrors_1.BadRequest("Product name already exusting, Do you mind editing instead?");
+            throw new customErrors_1.BadRequest("Product name already existing, Do you mind editing instead?");
         const newProduct = yield products_1.BaseProduct.create(req.body);
         res.status(http_status_codes_1.StatusCodes.CREATED).json((0, customResponse_1.successResponse)(newProduct, http_status_codes_1.StatusCodes.CREATED, 'Product created successfully'));
     }
@@ -33,6 +36,52 @@ const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.addProduct = addProduct;
+const setExchangeRate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { rate, currencyPair } = req.body;
+        if (!rate || !currencyPair) {
+            throw new customErrors_1.BadRequest('Please supply rate and currency pair');
+        }
+        const exchangeRate = yield exchangeRate_1.BaseExchangeRate.create({ rate, currencyPair });
+        res.status(http_status_codes_1.StatusCodes.CREATED).json((0, customResponse_1.successResponse)(exchangeRate, http_status_codes_1.StatusCodes.CREATED, 'Exchange rate created successfully'));
+    }
+    catch (error) {
+        console.error(error.message);
+        res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(new customErrors_1.InternalServerError(error.message));
+    }
+});
+exports.setExchangeRate = setExchangeRate;
+const updateExchangeRate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { rate, currencyPair } = req.body;
+        if (!rate || !currencyPair) {
+            throw new customErrors_1.BadRequest('Please supply rate and currency pair');
+        }
+        const exchangeRate = yield exchangeRate_1.BaseExchangeRate.findOneAndUpdate({ currencyPair }, { rate }, { new: true });
+        res.status(http_status_codes_1.StatusCodes.CREATED).json((0, customResponse_1.successResponse)(exchangeRate, http_status_codes_1.StatusCodes.CREATED, 'Exchange rate edited successfully'));
+    }
+    catch (error) {
+        console.error(error.message);
+        res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(new customErrors_1.InternalServerError(error.message));
+    }
+});
+exports.updateExchangeRate = updateExchangeRate;
+// Get exchange rate
+const getExchangeRate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { currencyPair } = req.params;
+        const rate = yield exchangeRate_1.BaseExchangeRate.findOne({ currencyPair });
+        if (!rate) {
+            throw new customErrors_1.NotFound('Exchange rate not found');
+        }
+        res.status(http_status_codes_1.StatusCodes.OK).json((0, customResponse_1.successResponse)(rate, http_status_codes_1.StatusCodes.OK, 'Rate retrieved successfully'));
+    }
+    catch (error) {
+        console.error(error.message);
+        res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(new customErrors_1.InternalServerError(error.message));
+    }
+});
+exports.getExchangeRate = getExchangeRate;
 // Get a product by ID
 const getProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

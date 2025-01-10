@@ -8,4 +8,5 @@ const express_1 = __importDefault(require("express"));
 const products_1 = require("../controllers/products"); // Adjust the path as needed
 const router = express_1.default.Router();
 router.get('/products', products_1.getProducts);
+router.get('/exchange-rate/:currencyPair', products_1.getExchangeRate);
 exports.default = router;
