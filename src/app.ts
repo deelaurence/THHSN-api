@@ -1,4 +1,3 @@
-
 import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
@@ -12,6 +11,7 @@ import resumeRoutes from './routes/dataCollection'
 import { Secret } from 'jsonwebtoken';
 import  dotenv from 'dotenv' 
 import passport from 'passport'; 
+import shippingRoutes from './routes/shipping'
 import profileRoutes from './routes/userProfile'
 import googleRoutes from './routes/googleAuth'
 import morgan from 'morgan'
@@ -70,6 +70,7 @@ app.use('/v1/prompt', airoutes)
 app.use('/v1/resume', resumeRoutes)
 app.use('/v1/profile', profileRoutes)
 app.use('/v1/payment', paymentRoute)
+app.use('/v1/shipping', shippingRoutes)
 app.use("/v1/docs", swaggerUI.serve, swaggerUI.setup(require('./docs')));
 app.set('trust proxy',1);    
 app.use("*",(req,res)=>{  
