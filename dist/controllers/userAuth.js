@@ -31,6 +31,7 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!req.body.firstName || !req.body.lastName || !req.body.email) {
             throw new customErrors_1.BadRequest("Supply Name, Password and Email");
         }
+        req.body.name = `${req.body.lastName} ${req.body.firstName}`;
         if (!(0, nameFormat_1.isValidNameInput)(`${req.body.firstName} ${req.body.Lastname}`)) {
             throw new customErrors_1.BadRequest("Enter both Lastname and Firstname, No compound names");
         }
@@ -186,8 +187,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!email || !password) {
             throw new customErrors_1.BadRequest("email and password cannot be empty");
         }
-        const user = yield user_1.BaseUser.findOne({ email: email })
-            .populate({ path: 'resumes' });
+        const user = yield user_1.BaseUser.findOne({ email: email });
         if (!user) {
             throw new customErrors_1.NotFound("Email not registered, Sign up");
         }
@@ -203,15 +203,18 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             throw new customErrors_1.Unauthenticated("Verify your email");
         }
         const token = user.generateJWT(process.env.JWT_SECRET);
+        console.log(user);
         return res.status(http_status_codes_1.StatusCodes.OK).
             json((0, customResponse_1.successResponse)({
             token: token,
             email: user.email,
             name: user.name,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            address: user.address,
             phonenumber: user.phoneNumber,
             gender: user.gender,
             country: user.country,
-            resumes: user.resumes
         }, http_status_codes_1.StatusCodes.OK, 'Welcome back'));
     }
     catch (error) {

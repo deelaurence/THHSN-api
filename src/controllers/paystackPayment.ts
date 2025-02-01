@@ -15,7 +15,7 @@ import { hotError } from "../errors/hotError";
 import crypto from "crypto";
 
 const secretKey = process.env.paystack_key;
-const clientUrl = process.env.CLIENT_URL+"/#"
+const clientUrl = process.env.CLIENT_URL
 const _paystack = paystack(secretKey);
 
 let payingUserCache;
@@ -30,34 +30,45 @@ export const chargePayment = async (req:Request, res:Response) => {
     
     const userId = req.decoded?.id;
     const user = await BaseUser.findOne({ _id: userId });
-    let {amount,description}=req.body;
-    amount=amount*100
-
+    let {grandTotal,description}=req.body;
+    grandTotal=grandTotal*100
 
     if (!user) {
       throw new NotFound("User not found");
     }
-    if(!description||!amount){
+
+    user.phoneNumber=req.body.telephone
+    user.address=req.body.address
+    user.firstName=req.body.firstName
+    user.lastName=req.body.lastName
+    user.state=req.body.selectedState
+    user.city=req.body.selectedCity
+
+    await user.save()
+
+    if(!grandTotal){
         throw new BadRequest("Supply description and amount")
     }
+ 
+    console.log(req.body)
 
     const transaction = await _paystack.transaction.initialize({
-      amount:amount, // Amount in kobo (100000 kobo = ₦1,000)
+      amount:grandTotal, // Amount in kobo (100000 kobo = ₦1,000)
       email: user.email,
       metadata: {
-        description,
-        name: user.name,
+        description:req.body,
+        name: user.name||user.firstName||user.lastName||"Anonymous",
       },
     });
-    console.log(transaction)
-    // Redirect the customer to the payment page
+    
+    // Redirect )the customer to the payment page
     res.json(successResponse(
         {redirect:transaction.data.authorization_url},
         200,
         "Succesfully Initialized payment"
     ));
   } catch (error:any) {
-    hotError(error,res)
+    hotError(error,res) 
   }
 };
 
@@ -87,7 +98,6 @@ export const webhookVerification = async (req:Request, res:Response) => {
   const event = req.body;
   const eventType = event.event;
   const eventData = event.data;
-
   const payloadEmail = eventData.customer.email;
   const payloadDescription = eventData.metadata.description;
   const payloadReference = eventData.reference;
@@ -96,18 +106,18 @@ export const webhookVerification = async (req:Request, res:Response) => {
   const payloadAuth = eventData.authorization.authorization_code;
   // Handle the event based on the event type
   if (eventType === "charge.success") {
-    const payingUser = await BaseUser.findOne({ email: payloadEmail });
-
+    // const payingUser = await BaseUser.findOne({ email: payloadEmail });
     // save eventData to db
     await Payment.create({
       owner: payloadEmail,
       id: uuidv4(),
       name: payloadName,
+      merchant:"paystack",
       date: dateFormat(),
       status: "Success",
       paystackAuthorization:payloadAuth,
       amount: payloadAmount / 100,
-      description: payloadDescription,
+      description: 'payloadDescription',
       reference: payloadReference,
     });
 
@@ -164,13 +174,12 @@ export const verifyPaymentCallback = async (req:Request, res:Response) => {
     if (response.data.data.status === "success") {
       // res.json({message:"payment sucessful"})
       console.log("Payment successful");
-
       const amount = response.data.data.amount / 100;
       const description = response.data.data.metadata.description;
       const name = response.data.data.metadata.name;
       const reference = response.data.data.reference;
       res.redirect(
-        `${clientUrl}/receipt?amount=${amount}&description=${description}&reference=${reference}&name=${name}`
+        `${clientUrl}/receipt?amount=${amount}&description=${JSON.stringify(description)}&reference=${reference}&name=${name}`
       );
     } else {
       // Payment is not successful

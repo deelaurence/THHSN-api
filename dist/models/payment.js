@@ -13,6 +13,10 @@ const paymentSchema = new mongoose_1.default.Schema({
         type: Number,
         required: true
     },
+    merchant: {
+        type: String,
+        required: true
+    },
     description: {
         type: String,
         required: true

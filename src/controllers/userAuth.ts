@@ -1,6 +1,5 @@
 require("dotenv").config();
 import {BaseUser, IUser} from '../models/user';
-import { IResume } from '../models/resume';
 // const crypto = require("crypto");
 import { Request, Response } from 'express';
 
@@ -27,6 +26,7 @@ const register = async (req:Request, res:Response) => {
         "Supply Name, Password and Email"
       );
     }
+    req.body.name=`${req.body.lastName} ${req.body.firstName}`
     if (!isValidNameInput(`${req.body.firstName} ${req.body.Lastname}`)) {
       throw new BadRequest(
         "Enter both Lastname and Firstname, No compound names"
@@ -224,7 +224,7 @@ const login = async (req:Request, res:Response) => {
     }
     
     const user = await BaseUser.findOne({ email: email })
-        .populate({path:'resumes'});
+
 
 
     if (!user) {
@@ -248,15 +248,19 @@ const login = async (req:Request, res:Response) => {
     
     const token = user.generateJWT(process.env.JWT_SECRET as Secret);
     
+    console.log(user)
     return res.status(StatusCodes.OK).
+    
     json(successResponse({
       token: token,
       email: user.email,
       name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      address:user.address,
       phonenumber: user.phoneNumber,
       gender: user.gender,
       country: user.country,
-      resumes: user.resumes
     },StatusCodes.OK,'Welcome back'));
   } catch (error:any) {
     const { message, statusCode } = error;
@@ -268,7 +272,7 @@ const login = async (req:Request, res:Response) => {
     res.status(StatusCodes.UNAUTHORIZED).json(error);
     console.log(message);
   }
-};
+}; 
 
 // const logout = (req, res) => {
 //   res.clearCookie("token", { httpOnly: true, sameSite: "none", secure: true });

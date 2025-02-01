@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt,{Secret} from "jsonwebtoken";
 import { BoolEnum } from 'sharp';
 
+
 interface IUser extends Document {
   generateJWT(JWT_SECRET: string | Secret): unknown;
   comparePassword(password: string | undefined): boolean;
@@ -30,15 +31,13 @@ interface IUser extends Document {
   canResetPassword:boolean;
   displayName: string; 
   userId: string;
-  resumes: { profession: string; resume: mongoose.Types.ObjectId }[]; 
   provider:string;
   phoneNumber: string;
   gender: string;
   country:string;
   city:string;
-
-   
-  
+  state:string;
+  address:string; 
 }
 
 const userSchema = new Schema<IUser>({
@@ -86,10 +85,6 @@ const userSchema = new Schema<IUser>({
       type: Boolean,
       default: false,
     },
-    resumes: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Resume' 
-    }],
     displayName: {
       type: String,
     },
@@ -112,6 +107,10 @@ const userSchema = new Schema<IUser>({
       default: null,
     },
     city: {
+      type: String,
+      default: null,
+    },
+    address: {
       type: String,
       default: null,
     }
