@@ -259,8 +259,8 @@ const login = async (req:Request, res:Response) => {
       lastName: user.lastName,
       address:user.address,
       phonenumber: user.phoneNumber,
-      gender: user.gender,
       country: user.country,
+      gender: user.gender,
     },StatusCodes.OK,'Welcome back'));
   } catch (error:any) {
     const { message, statusCode } = error;

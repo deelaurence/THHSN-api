@@ -147,6 +147,12 @@ class Store {
         return actionsWithoutNumbering;
     }
 
+    areStringsStrictlyEqual(str1: string, str2: string): boolean {
+        const normalize = (str: string) => str.toLowerCase().replace(/\s+/g, '').trim();
+        return normalize(str1) === normalize(str2);
+    }
+      
+
     // Method to remove numbering from a string
     private removeNumbering(action: string): string {
         return action.replace(/^\d+\.\s/, ''); // Removes leading numbering

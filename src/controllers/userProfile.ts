@@ -33,6 +33,20 @@ const getUserProfile = async(req:Request, res:Response): Promise<void>=>{
   }
 }
 
+const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const users = await BaseUser.find()
+
+    res.status(StatusCodes.OK).json(successResponse(
+      users, StatusCodes.OK, "List of all users"
+    ));
+  } catch (error: any) {
+    // Handle errors
+    console.error(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(new InternalServerError(error.message));
+  }
+}
 export{
-    getUserProfile
+    getUserProfile,getAllUsers
 }

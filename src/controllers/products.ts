@@ -6,8 +6,8 @@ import { successResponse } from '../utils/customResponse';
 
 import {v2 as cloudinary} from 'cloudinary'
 import { BaseExchangeRate } from '../models/exchangeRate';
-
-
+import Store from '../store/store';
+const store = new Store()
 
 
 // Create a new product
@@ -17,9 +17,16 @@ const addProduct = async (req: Request, res: Response) => {
     if (!name || !category ) {
       throw new BadRequest('Please supply Product Name and Category');
     }
-    const productExists: IProductType | null = await BaseProduct.findOne({
-      name: { $regex: new RegExp(`^${name.trim()}$`, 'i') }
-    });
+    // const productExists: IProductType | null = await BaseProduct.findOne({
+    //   name: { $regex: new RegExp(`^${name.trim().replace(/\s+/g, ' ')}$`, 'i') }
+    // });
+    let productExists=false
+    const allProducts = await BaseProduct.find({})
+    allProducts.forEach((product)=>{
+      productExists=store.areStringsStrictlyEqual(product.name,name)
+    })
+
+    console.log(productExists)
     if (productExists) throw new BadRequest("Product name already existing, Do you mind editing instead?");
     const newProduct: IProductType = await BaseProduct.create(req.body);
 

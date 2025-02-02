@@ -130,6 +130,10 @@ class Store {
         actionsWithoutNumbering = actionsWithoutNumbering.map(action => this.removeAsterisks(action));
         return actionsWithoutNumbering;
     }
+    areStringsStrictlyEqual(str1, str2) {
+        const normalize = (str) => str.toLowerCase().replace(/\s+/g, '').trim();
+        return normalize(str1) === normalize(str2);
+    }
     // Method to remove numbering from a string
     removeNumbering(action) {
         return action.replace(/^\d+\.\s/, ''); // Removes leading numbering

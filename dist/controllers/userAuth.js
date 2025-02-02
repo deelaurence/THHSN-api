@@ -213,8 +213,8 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             lastName: user.lastName,
             address: user.address,
             phonenumber: user.phoneNumber,
-            gender: user.gender,
             country: user.country,
+            gender: user.gender,
         }, http_status_codes_1.StatusCodes.OK, 'Welcome back'));
     }
     catch (error) {

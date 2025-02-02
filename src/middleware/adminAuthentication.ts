@@ -30,12 +30,17 @@ const adminAuth = async (req: Request, res: Response, next: NextFunction) => {
       throw new Unauthenticated('Token not provided');
     }
 
+
+
     // Verify the token
     const payload = jwt.verify(token, process.env.JWT_SECRET as Secret) as JwtPayload;
 
     // Attach decoded payload to the request object
     req.decoded = { name: payload.name, id: payload.id };
 
+    if(!payload.boss){
+      throw new Unauthenticated('Not an admin');
+    }
     console.log('admin auth end, next');
     next();
   } catch (error: any) {

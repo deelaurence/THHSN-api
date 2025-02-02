@@ -8,6 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProducts = exports.deleteProduct = exports.updateProductVariation = exports.updateProductImage = exports.bestsellerAndNewArrivalCoverImage = exports.updateProductBestsellerAndNewArrival = exports.updateProductNameAndDescription = exports.getProductDrafts = exports.getExchangeRate = exports.updateExchangeRate = exports.setExchangeRate = exports.getProduct = exports.addProduct = void 0;
 const products_1 = require("../models/products");
@@ -15,6 +18,8 @@ const http_status_codes_1 = require("http-status-codes");
 const customErrors_1 = require("../errors/customErrors");
 const customResponse_1 = require("../utils/customResponse");
 const exchangeRate_1 = require("../models/exchangeRate");
+const store_1 = __importDefault(require("../store/store"));
+const store = new store_1.default();
 // Create a new product
 const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -22,9 +27,15 @@ const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!name || !category) {
             throw new customErrors_1.BadRequest('Please supply Product Name and Category');
         }
-        const productExists = yield products_1.BaseProduct.findOne({
-            name: { $regex: new RegExp(`^${name.trim()}$`, 'i') }
+        // const productExists: IProductType | null = await BaseProduct.findOne({
+        //   name: { $regex: new RegExp(`^${name.trim().replace(/\s+/g, ' ')}$`, 'i') }
+        // });
+        let productExists = false;
+        const allProducts = yield products_1.BaseProduct.find({});
+        allProducts.forEach((product) => {
+            productExists = store.areStringsStrictlyEqual(product.name, name);
         });
+        console.log(productExists);
         if (productExists)
             throw new customErrors_1.BadRequest("Product name already existing, Do you mind editing instead?");
         const newProduct = yield products_1.BaseProduct.create(req.body);

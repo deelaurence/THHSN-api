@@ -84,6 +84,8 @@ function verifyWebhookSignature(headerSignature:string | string[] | undefined, r
 
 export const webhookVerification = async (req:Request, res:Response) => {
   // Verify the signature
+  try{
+
   const headerSignature = req.headers["x-paystack-signature"];
   const isSignatureValid = verifyWebhookSignature(
     headerSignature,
@@ -117,7 +119,7 @@ export const webhookVerification = async (req:Request, res:Response) => {
       status: "Success",
       paystackAuthorization:payloadAuth,
       amount: payloadAmount / 100,
-      description: 'payloadDescription',
+      description: payloadDescription,
       reference: payloadReference,
     });
 
@@ -154,7 +156,11 @@ export const webhookVerification = async (req:Request, res:Response) => {
   }
   // Respond with a success status
   res.sendStatus(200);
-};
+} catch (error:any) {
+  console.error(error)
+  res.status(400).send("Error in webhook verification");
+}
+}; 
 
 // Handle the callback URL
 export const verifyPaymentCallback = async (req:Request, res:Response) => {
@@ -191,6 +197,8 @@ export const verifyPaymentCallback = async (req:Request, res:Response) => {
     res.status(500).send("Verification error");
   }
 };
+
+
 
 // const getSinglePayment = async (req, res) => {
 //   try {

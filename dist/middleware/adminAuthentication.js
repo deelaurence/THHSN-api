@@ -35,6 +35,9 @@ const adminAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         const payload = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         // Attach decoded payload to the request object
         req.decoded = { name: payload.name, id: payload.id };
+        if (!payload.boss) {
+            throw new customErrors_1.Unauthenticated('Not an admin');
+        }
         console.log('admin auth end, next');
         next();
     }

@@ -163,10 +163,8 @@ route.get("/success", async (req:any, res) => {
       `${process.env.CLIENT_URL}/dashboard?payload=${encodeURIComponent(
         // encryptedToken
         token
-      )}&email=${user?.email}&name=${user?.name}&token="csrf"`
+      )}&email=${user?.email}&name=${user?.name}&firstName=${user?.firstName}&lastName=${user?.lastName}&address=${user?.address}&phonenumber=${user?.phoneNumber}&country=${user?.country}`
     );
-
-
   } else {
     res.json( new Unauthenticated ("User unauthenticated") );
   }

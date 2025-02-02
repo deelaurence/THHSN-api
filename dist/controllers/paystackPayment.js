@@ -80,74 +80,80 @@ function verifyWebhookSignature(headerSignature, requestPayload) {
 }
 const webhookVerification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Verify the signature
-    const headerSignature = req.headers["x-paystack-signature"];
-    const isSignatureValid = verifyWebhookSignature(headerSignature, JSON.stringify(req.body));
-    if (!isSignatureValid) {
-        res.status(400).send("Invalid signature");
-        return;
+    try {
+        const headerSignature = req.headers["x-paystack-signature"];
+        const isSignatureValid = verifyWebhookSignature(headerSignature, JSON.stringify(req.body));
+        if (!isSignatureValid) {
+            res.status(400).send("Invalid signature");
+            return;
+        }
+        // Process the webhook event
+        const event = req.body;
+        const eventType = event.event;
+        const eventData = event.data;
+        const payloadEmail = eventData.customer.email;
+        const payloadDescription = eventData.metadata.description;
+        const payloadReference = eventData.reference;
+        const payloadAmount = eventData.amount;
+        const payloadName = eventData.metadata.name;
+        const payloadAuth = eventData.authorization.authorization_code;
+        // Handle the event based on the event type
+        if (eventType === "charge.success") {
+            // const payingUser = await BaseUser.findOne({ email: payloadEmail });
+            // save eventData to db
+            yield payment_1.default.create({
+                owner: payloadEmail,
+                id: (0, uuid_1.v4)(),
+                name: payloadName,
+                merchant: "paystack",
+                date: dateFormat(),
+                status: "Success",
+                paystackAuthorization: payloadAuth,
+                amount: payloadAmount / 100,
+                description: payloadDescription,
+                reference: payloadReference,
+            });
+        }
+        else if (eventType === "charge.failed") {
+            yield payment_1.default.create({
+                owner: payloadEmail,
+                id: (0, uuid_1.v4)(),
+                name: payloadName,
+                date: dateFormat(),
+                status: "Failed",
+                amount: payloadAmount / 100,
+                description: payloadDescription,
+                reference: payloadReference,
+            });
+            // Handle failed payment event
+            console.log("Payment failed.");
+            // Take appropriate actions like notifying the user, logging the failure, etc.
+        }
+        else if (eventType === "charge.refunded") {
+            // Handle refunded payment event
+            console.log("Payment refunded.");
+            yield payment_1.default.create({
+                owner: payloadEmail,
+                id: (0, uuid_1.v4)(),
+                name: payloadName,
+                date: dateFormat(),
+                status: "Refunded",
+                amount: payloadAmount / 100,
+                description: payloadDescription,
+                reference: payloadReference,
+            });
+        }
+        else {
+            // Handle other events as needed
+            console.log(eventType);
+        }
+        // Respond with a success status
+        res.sendStatus(200);
     }
-    // Process the webhook event
-    const event = req.body;
-    const eventType = event.event;
-    const eventData = event.data;
-    const payloadEmail = eventData.customer.email;
-    const payloadDescription = eventData.metadata.description;
-    const payloadReference = eventData.reference;
-    const payloadAmount = eventData.amount;
-    const payloadName = eventData.metadata.name;
-    const payloadAuth = eventData.authorization.authorization_code;
-    // Handle the event based on the event type
-    if (eventType === "charge.success") {
-        // const payingUser = await BaseUser.findOne({ email: payloadEmail });
-        // save eventData to db
-        yield payment_1.default.create({
-            owner: payloadEmail,
-            id: (0, uuid_1.v4)(),
-            name: payloadName,
-            merchant: "paystack",
-            date: dateFormat(),
-            status: "Success",
-            paystackAuthorization: payloadAuth,
-            amount: payloadAmount / 100,
-            description: 'payloadDescription',
-            reference: payloadReference,
-        });
+    catch (error) {
+        console.error(error);
+        res.status(400).send("Error in webhook verification");
     }
-    else if (eventType === "charge.failed") {
-        yield payment_1.default.create({
-            owner: payloadEmail,
-            id: (0, uuid_1.v4)(),
-            name: payloadName,
-            date: dateFormat(),
-            status: "Failed",
-            amount: payloadAmount / 100,
-            description: payloadDescription,
-            reference: payloadReference,
-        });
-        // Handle failed payment event
-        console.log("Payment failed.");
-        // Take appropriate actions like notifying the user, logging the failure, etc.
-    }
-    else if (eventType === "charge.refunded") {
-        // Handle refunded payment event
-        console.log("Payment refunded.");
-        yield payment_1.default.create({
-            owner: payloadEmail,
-            id: (0, uuid_1.v4)(),
-            name: payloadName,
-            date: dateFormat(),
-            status: "Refunded",
-            amount: payloadAmount / 100,
-            description: payloadDescription,
-            reference: payloadReference,
-        });
-    }
-    else {
-        // Handle other events as needed
-        console.log(eventType);
-    }
-    // Respond with a success status
-    res.sendStatus(200);
 });
 exports.webhookVerification = webhookVerification;
 // Handle the callback URL

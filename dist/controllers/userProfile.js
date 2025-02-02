@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserProfile = void 0;
+exports.getAllUsers = exports.getUserProfile = void 0;
 const http_status_codes_1 = require("http-status-codes");
 const customResponse_1 = require("../utils/customResponse");
 const customErrors_1 = require("../errors/customErrors");
@@ -38,3 +38,16 @@ const getUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getUserProfile = getUserProfile;
+const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield user_1.BaseUser.find();
+        res.status(http_status_codes_1.StatusCodes.OK).json((0, customResponse_1.successResponse)(users, http_status_codes_1.StatusCodes.OK, "List of all users"));
+    }
+    catch (error) {
+        // Handle errors
+        console.error(error);
+        res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR)
+            .json(new customErrors_1.InternalServerError(error.message));
+    }
+});
+exports.getAllUsers = getAllUsers;

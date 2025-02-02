@@ -20,6 +20,10 @@ const AdminSchema = new mongoose_1.Schema({
     name: {
         type: String, //for email sending purposes only
     },
+    boss: {
+        type: Boolean,
+        default: true
+    },
     firstName: {
         type: String,
     },
@@ -58,7 +62,7 @@ AdminSchema.pre('save', function (next) {
     });
 });
 AdminSchema.methods.generateJWT = function (signature) {
-    return jsonwebtoken_1.default.sign({ id: this._id, name: this.name }, signature, { expiresIn: '24h' });
+    return jsonwebtoken_1.default.sign({ id: this._id, name: this.name, boss: this.boss }, signature, { expiresIn: '24h' });
 };
 AdminSchema.methods.comparePassword = function (passwordInput) {
     return __awaiter(this, void 0, void 0, function* () {

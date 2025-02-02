@@ -8,6 +8,7 @@ interface IAdmin extends Document {
   name: string;
   firstName:string;
   lastName:string;
+  boss:boolean;
   email?: {
     type: string;
     unique?: string|undefined;
@@ -22,6 +23,10 @@ interface IAdmin extends Document {
 const AdminSchema = new Schema<IAdmin>({
     name: {
       type: String,//for email sending purposes only
+    },
+    boss:{
+      type:Boolean,
+      default:true
     },
     firstName: {
       type: String,
@@ -64,7 +69,7 @@ AdminSchema.pre('save', async function (this: IAdmin, next) {
 });
 
 AdminSchema.methods.generateJWT = function (this: IAdmin, signature: string): string {
-  return jwt.sign({ id: this._id, name: this.name }, signature, { expiresIn: '24h' });
+  return jwt.sign({ id: this._id, name: this.name, boss:this.boss }, signature, { expiresIn: '24h' });
 };
 
 AdminSchema.methods.comparePassword = async function (
