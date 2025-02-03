@@ -131,9 +131,10 @@ route.get("/success", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         //   `http://localhost:5500/skyskill.html?email=${user.email}&name=${user.name}`
         // );
         // const encryptedToken = cryptoJs.AES.encrypt(token, process.env.crypto_key).toString();
-        return res.redirect(`${process.env.CLIENT_URL}/dashboard?payload=${encodeURIComponent(
+        console.log(`${process.env.CLIENT_URL}/dashboard?payload=${encodeURIComponent(
         // encryptedToken
         token)}&email=${user === null || user === void 0 ? void 0 : user.email}&name=${user === null || user === void 0 ? void 0 : user.name}&firstName=${user === null || user === void 0 ? void 0 : user.firstName}&lastName=${user === null || user === void 0 ? void 0 : user.lastName}&address=${user === null || user === void 0 ? void 0 : user.address}&phonenumber=${user === null || user === void 0 ? void 0 : user.phoneNumber}&country=${user === null || user === void 0 ? void 0 : user.country}`);
+        return res.redirect(`${process.env.CLIENT_URL}/dashboard?payload=${encodeURIComponent(token || "")}&email=${(user === null || user === void 0 ? void 0 : user.email) || ""}&name=${(user === null || user === void 0 ? void 0 : user.name) || ""}&firstName=${(user === null || user === void 0 ? void 0 : user.firstName) || ""}&lastName=${(user === null || user === void 0 ? void 0 : user.lastName) || ""}&address=${(user === null || user === void 0 ? void 0 : user.address) || ""}&phonenumber=${(user === null || user === void 0 ? void 0 : user.phoneNumber) || ""}&country=${(user === null || user === void 0 ? void 0 : user.country) || ""}`);
     }
     else {
         res.json(new customErrors_1.Unauthenticated("User unauthenticated"));

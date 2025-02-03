@@ -159,11 +159,16 @@ route.get("/success", async (req:any, res) => {
     //   `http://localhost:5500/skyskill.html?email=${user.email}&name=${user.name}`
     // );
     // const encryptedToken = cryptoJs.AES.encrypt(token, process.env.crypto_key).toString();
+    console.log(  `${process.env.CLIENT_URL}/dashboard?payload=${encodeURIComponent(
+      // encryptedToken
+      token
+    )}&email=${user?.email}&name=${user?.name}&firstName=${user?.firstName}&lastName=${user?.lastName}&address=${user?.address}&phonenumber=${user?.phoneNumber}&country=${user?.country}`
+  )
+    
     return res.redirect(
       `${process.env.CLIENT_URL}/dashboard?payload=${encodeURIComponent(
-        // encryptedToken
-        token
-      )}&email=${user?.email}&name=${user?.name}&firstName=${user?.firstName}&lastName=${user?.lastName}&address=${user?.address}&phonenumber=${user?.phoneNumber}&country=${user?.country}`
+      token || ""
+      )}&email=${user?.email || ""}&name=${user?.name || ""}&firstName=${user?.firstName || ""}&lastName=${user?.lastName || ""}&address=${user?.address || ""}&phonenumber=${user?.phoneNumber || ""}&country=${user?.country || ""}`
     );
   } else {
     res.json( new Unauthenticated ("User unauthenticated") );
