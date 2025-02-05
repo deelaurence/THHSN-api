@@ -24,6 +24,10 @@ const ProductSchema = new mongoose_1.Schema({
         type: String,
         required: [true, "Supply Product Name"]
     },
+    softDeleted: {
+        type: Boolean,
+        default: false
+    },
     category: {
         type: String,
         required: [true, "Supply Product Category"]

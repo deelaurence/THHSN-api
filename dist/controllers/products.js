@@ -115,6 +115,7 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const products = yield products_1.BaseProduct.find({
             images: { $exists: true, $not: { $size: 0 } },
             variations: { $exists: true, $not: { $size: 0 } },
+            softDeleted: false
         }).sort({ _id: -1 });
         res.status(http_status_codes_1.StatusCodes.OK).json((0, customResponse_1.successResponse)(products, http_status_codes_1.StatusCodes.OK, 'Product retrieved successfully'));
     }
@@ -132,7 +133,8 @@ const getProductDrafts = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 { images: { $size: 0 } }, // Empty images array
                 { variations: { $exists: false } }, // Missing variations
                 { variations: { $size: 0 } }, // Empty variations array
-            ]
+            ],
+            softDeleted: false
         }).sort({ _id: -1 }); // Sorting by newest
         res.status(http_status_codes_1.StatusCodes.OK).json((0, customResponse_1.successResponse)(drafts, http_status_codes_1.StatusCodes.OK, 'Drafts retrieved successfully'));
     }
@@ -271,11 +273,11 @@ const bestsellerAndNewArrivalCoverImage = (req, res) => __awaiter(void 0, void 0
     }
 });
 exports.bestsellerAndNewArrivalCoverImage = bestsellerAndNewArrivalCoverImage;
-// Delete a product by ID
+// Soft delete a product by ID
 const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const deletedProduct = yield products_1.BaseProduct.findByIdAndDelete(id);
+        const deletedProduct = yield products_1.BaseProduct.findByIdAndUpdate(id, { softDeleted: true });
         if (!deletedProduct) {
             throw new customErrors_1.NotFound('Product not found for deletion');
         }

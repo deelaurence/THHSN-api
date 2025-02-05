@@ -106,9 +106,14 @@ const getProduct = async (req: Request, res: Response) => {
 // Get products that all fields are completed
 const getProducts = async (req: Request, res: Response) => {
   try {
+
+
+    
+    
     const products = await BaseProduct.find({
       images: {$exists:true, $not: {$size:0}},
       variations: {$exists:true, $not: {$size:0}},
+      softDeleted:false
     }).sort({_id:-1})
 
     
@@ -129,7 +134,8 @@ const getProductDrafts = async (req: Request, res: Response) => {
         { images: { $size: 0 } },                  // Empty images array
         { variations: { $exists: false } },        // Missing variations
         { variations: { $size: 0 } },              // Empty variations array
-      ]
+      ],
+      softDeleted:false
     }).sort({ _id: -1 }); // Sorting by newest
 
     res.status(StatusCodes.OK).json(successResponse(drafts, StatusCodes.OK, 'Drafts retrieved successfully'));
@@ -282,12 +288,12 @@ const bestsellerAndNewArrivalCoverImage = async (req: Request, res: Response) =>
   }
 };
 
-// Delete a product by ID
+// Soft delete a product by ID
 const deleteProduct = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    const deletedProduct = await BaseProduct.findByIdAndDelete(id);
+    const deletedProduct = await BaseProduct.findByIdAndUpdate(id,{softDeleted:true});
 
     if (!deletedProduct) {
       throw new NotFound('Product not found for deletion');

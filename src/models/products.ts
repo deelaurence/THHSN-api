@@ -38,6 +38,7 @@ interface IProductType extends Document {
   description:string;
   quantity:number;
   price:number;
+  softDeleted:boolean;
   coverImage:string;
   bestSeller:boolean;
   newArrival:boolean;
@@ -49,6 +50,10 @@ const ProductSchema = new Schema<IProductType>({
     name: {
       type: String,
       required:[true,"Supply Product Name"]
+    },
+    softDeleted:{
+      type: Boolean,
+      default: false
     },
     category: {
       type: String,
