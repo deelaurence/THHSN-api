@@ -62,6 +62,9 @@ app.use(passport.session());
 // app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
  
+app.get('/wake',(req,res)=>{
+  res.json({message:"Service awake!!"})
+})
 app.use(bodyParser.json());
 app.use("/", googleRoutes);
 app.use('/v1/auth', authRoutes);
@@ -105,9 +108,7 @@ async function makeApiRequest() {
 }
 
 
-app.get('/',(req,res)=>{
-    res.json({message:"Service awake!!"})
-})
+
 
 
 

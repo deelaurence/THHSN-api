@@ -56,6 +56,9 @@ app.use(passport_1.default.session());
 //INITIALIZED BEFORE CALLING PASSPORT ROUTES
 //THE ORDER MATTERS TOO EXPRESS SESSION, THEN PASSPORT
 // app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+app.get('/wake', (req, res) => {
+    res.json({ message: "Service awake!!" });
+});
 app.use(body_parser_1.default.json());
 app.use("/", googleAuth_1.default);
 app.use('/v1/auth', auth_1.default);
@@ -93,9 +96,6 @@ function makeApiRequest() {
         }
     });
 }
-app.get('/', (req, res) => {
-    res.json({ message: "Service awake!!" });
-});
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}..`);
 });
