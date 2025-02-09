@@ -92,7 +92,7 @@ cron.schedule('*/8 * * * *', () => {
 });
 
 
-const apiEndpoints:string[]=['https://wake-up-skyskill.onrender.com']
+const apiEndpoints:string[]=['https://wake-up-server-8pcm.onrender.com']
 
 // Function to make the API request using Axios
 async function makeApiRequest() {
