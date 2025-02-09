@@ -22,68 +22,67 @@ const sendBrevoMail = async (email:string, name:string, link:string) => {
     <meta charset="utf-8" />
     <title>Verify Account</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Aboreto&family=Blinker:wght@100;200;300;400;600;700;800;900");
-      /* Reset styles to ensure consistent rendering across different email clients */
-      body,
-      #bodyTable {
-        margin: 0;
-        padding: 0;
-        width: 100% !important;
-      }
-
-      table {
-        border-collapse: collapse;
-      }
-
-      td {
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        line-height: 1.5;
-        color: #333333;
-      }
-
-      /* Main email container */
-      #bodyTable {
-        background-color: #f4f4f4;
-      }
-
-      /* Email content */
-      #emailContainer {
-        background-color: white;
-        max-width: 600px;
-        /* background-color: #63c5da; */
-        margin: 0 auto;
-      }
-
-      p {
-        position: relative;
-        z-index: 2;
-        font-size: 16px;
-        color: #333333;
-        /* display: none; */
-        margin-bottom: -40px;
+        @import url("https://fonts.googleapis.com/css2?family=Aboreto&family=Blinker:wght@100;200;300;400;600;700;800;900");
+        /* Reset styles to ensure consistent rendering across different email clients */
+        body,
+        #bodyTable {
+          margin: 0;
+          padding: 0;
+          width: 100% !important;
         }
-        
-        a{
+  
+        table {
+          border-collapse: collapse;
+        }
+  
+        td {
+          font-family: Arial, sans-serif;
+          font-size: 14px;
+          line-height: 1.5;
+          color: #333333;
+        }
+  
+        /* Main email container */
+        #bodyTable {
+          background-color: #f4f4f4;
+        }
+  
+        /* Email content */
+        #emailContainer {
+          background-color: white;
+          max-width: 600px;
+          /* background-color: #63c5da; */
+          margin: 0 auto;
+        }
+  
+        p {
+          z-index: 2;
           font-size: 16px;
           color: #333333;
-      }
-      /* Email body */
-      #body {
-        padding: 40px;
-      }
-
-      
-
-      /* Email footer */
-      #footer {
-        background-color: #f9fafb;
-        padding: 16px;
-        text-align: center;
-        font-size: 12px;
-        color: #999999;
-      }
-    </style>
+          /* display: none; */
+          }
+          
+          a{
+            font-size: 16px;
+            color: #333333;
+        }
+        /* Email body */
+        #body {
+          padding: 40px;
+        }
+  
+        
+  
+        /* Email footer */
+        #footer {
+          background-color: #f9fafb;
+          padding: 16px;
+          margin-top:20px;
+          text-align: center;
+          font-size: 12px;
+          color: #999999;
+        }
+      </style>
   </head>
   <body>
     <table id="bodyTable" cellpadding="0" cellspacing="0" border="0">
@@ -145,11 +144,11 @@ const sendPasswordResetMail = async (email:string, name:string, link:string) => 
         name,
       },
     ],
-    subject: "Verify Your Account",
+    subject: "Reset your password",
     htmlContent: `<html>
     <head>
       <meta charset="utf-8" />
-      <title>Verify Account</title>
+      <title>Reset your password</title>
       <style>
         @import url("https://fonts.googleapis.com/css2?family=Aboreto&family=Blinker:wght@100;200;300;400;600;700;800;900");
         /* Reset styles to ensure consistent rendering across different email clients */
@@ -185,12 +184,10 @@ const sendPasswordResetMail = async (email:string, name:string, link:string) => 
         }
   
         p {
-          position: relative;
           z-index: 2;
           font-size: 16px;
           color: #333333;
           /* display: none; */
-          margin-bottom: -40px;
           }
           
           a{
@@ -208,6 +205,7 @@ const sendPasswordResetMail = async (email:string, name:string, link:string) => 
         #footer {
           background-color: #f9fafb;
           padding: 16px;
+          margin-top:20px;
           text-align: center;
           font-size: 12px;
           color: #999999;

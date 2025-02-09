@@ -1,9 +1,11 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import axios from 'axios';
 import bodyParser from 'body-parser';
 import authRoutes from './routes/auth';
 import adminAuthRoutes from './routes/adminAuth';
 import productRoutes from './routes/product';
+import cron from 'node-cron'
 import publicProductRoutes from './routes/publicProducts'
 import airoutes from './routes/Ai'
 const swaggerDocument = require('./swagger-output.json');
@@ -80,6 +82,33 @@ app.use("*",(req,res)=>{
 const connectionString:string = process.env.MONGODB_URI||''
 
 mongoose.connect(connectionString);
+
+
+cron.schedule('*/8 * * * *', () => {
+  makeApiRequest();
+});
+
+
+const apiEndpoints:string[]=['https://wake-up-skyskill.onrender.com']
+
+// Function to make the API request using Axios
+async function makeApiRequest() {
+  try {
+    apiEndpoints.forEach(async (endpoint)=>{
+      const response = await axios.get(endpoint);
+      console.log(response.data);
+
+    })
+  } catch (error:any) {
+    console.error('Error during API request:', error.message);
+  }
+}
+
+
+app.get('/',(req,res)=>{
+    res.json({message:"Service awake!!"})
+})
+
 
 
 app.listen(PORT, () => {

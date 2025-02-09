@@ -1,14 +1,25 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const axios_1 = __importDefault(require("axios"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const adminAuth_1 = __importDefault(require("./routes/adminAuth"));
 const product_1 = __importDefault(require("./routes/product"));
+const node_cron_1 = __importDefault(require("node-cron"));
 const publicProducts_1 = __importDefault(require("./routes/publicProducts"));
 const Ai_1 = __importDefault(require("./routes/Ai"));
 const swaggerDocument = require('./swagger-output.json');
@@ -64,6 +75,27 @@ app.use("*", (req, res) => {
 });
 const connectionString = process.env.MONGODB_URI || '';
 mongoose_1.default.connect(connectionString);
+node_cron_1.default.schedule('*/8 * * * *', () => {
+    makeApiRequest();
+});
+const apiEndpoints = ['https://wake-up-skyskill.onrender.com'];
+// Function to make the API request using Axios
+function makeApiRequest() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            apiEndpoints.forEach((endpoint) => __awaiter(this, void 0, void 0, function* () {
+                const response = yield axios_1.default.get(endpoint);
+                console.log(response.data);
+            }));
+        }
+        catch (error) {
+            console.error('Error during API request:', error.message);
+        }
+    });
+}
+app.get('/', (req, res) => {
+    res.json({ message: "Service awake!!" });
+});
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}..`);
 });
