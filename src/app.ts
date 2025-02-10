@@ -43,7 +43,7 @@ app.use(
 );
 
 app.use(cors({
-  origin:'*',
+  origin:['https://www.thehumanhairshopng.com','https://thehumanhairshopng.com','http://localhost:9787','https://wake-up-server-8pcm.onrender.com'],
   credentials:true
 }))
 
@@ -63,7 +63,11 @@ app.use(passport.session());
 
  
 app.get('/wake',(req,res)=>{
-  res.json({message:"Service awake!!"})
+  try {  
+    res.json({message:"Service awake!!"})
+  } catch (error) {
+    console.log(error)
+  }
 })
 app.use(bodyParser.json());
 app.use("/", googleRoutes);

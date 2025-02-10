@@ -45,7 +45,7 @@ app.use((0, express_session_1.default)({
     saveUninitialized: false,
 }));
 app.use((0, cors_1.default)({
-    origin: '*',
+    origin: ['https://www.thehumanhairshopng.com', 'https://thehumanhairshopng.com', 'http://localhost:9787', 'https://wake-up-server-8pcm.onrender.com'],
     credentials: true
 }));
 app.use((0, morgan_1.default)("dev"));
@@ -57,7 +57,12 @@ app.use(passport_1.default.session());
 //THE ORDER MATTERS TOO EXPRESS SESSION, THEN PASSPORT
 // app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.get('/wake', (req, res) => {
-    res.json({ message: "Service awake!!" });
+    try {
+        res.json({ message: "Service awake!!" });
+    }
+    catch (error) {
+        console.log(error);
+    }
 });
 app.use(body_parser_1.default.json());
 app.use("/", googleAuth_1.default);
@@ -81,7 +86,7 @@ mongoose_1.default.connect(connectionString);
 node_cron_1.default.schedule('*/8 * * * *', () => {
     makeApiRequest();
 });
-const apiEndpoints = ['https://wake-up-skyskill.onrender.com'];
+const apiEndpoints = ['https://wake-up-server-8pcm.onrender.com'];
 // Function to make the API request using Axios
 function makeApiRequest() {
     return __awaiter(this, void 0, void 0, function* () {
