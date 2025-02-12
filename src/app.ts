@@ -43,7 +43,7 @@ app.use(
 );
 
 app.use(cors({
-  origin:['https://www.thehumanhairshopng.com','https://thehumanhairshopng.com','http://localhost:9787','https://wake-up-server-8pcm.onrender.com'],
+  origin:['https://www.thehumanhairshopng.com','https://thehumanhairshopng.com','http://localhost:5173','https://wake-up-server-8pcm.onrender.com'],
   credentials:true
 }))
 

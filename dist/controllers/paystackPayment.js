@@ -31,10 +31,23 @@ const _paystack = (0, paystack_1.default)(secretKey);
 let payingUserCache;
 const store = new store_1.default();
 const dateFormat = store.formatDate;
+// async function bulkUpdatePayments() {
+//   try {
+//       const result = await Payment.updateMany(
+//           {}, // Empty filter updates all documents
+//           { $set: { deliveryStatus: 'pending' } } // Adds or updates deliveryStatus
+//       );
+//       console.log(`${result.modifiedCount} payments updated successfully.`);
+//   } catch (error) {
+//       console.error('Error updating payments:', error);
+//   }
+// }
+// // Call the function
+// bulkUpdatePayments();
 const chargePayment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        // Create a new transaction
+        // Create a new transaction 
         const userId = (_a = req.decoded) === null || _a === void 0 ? void 0 : _a.id;
         const user = yield user_1.BaseUser.findOne({ _id: userId });
         let { grandTotal, description } = req.body;

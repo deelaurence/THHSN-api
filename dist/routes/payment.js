@@ -14,4 +14,7 @@ route.post("/paystack/initiate", authentication_1.default, verifyCart_1.default,
 route.get("/paystack/callback", paystackPayment_1.verifyPaymentCallback);
 route.post("/paystack/webhook", paystackPayment_1.webhookVerification);
 route.get("/all", adminAuthentication_1.default, orders_1.getAllOrders);
+route.post("/shipping-status", adminAuthentication_1.default, orders_1.shippingStatus);
+route.post("/single", authentication_1.default, orders_1.getOneOrder);
+route.get("/all-user", authentication_1.default, orders_1.getAllUserOrders);
 exports.default = route;

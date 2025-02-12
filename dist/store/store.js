@@ -71,6 +71,7 @@ class Store {
             weekday: 'long',
             month: 'long',
             day: 'numeric',
+            year: 'numeric'
         };
         //@ts-ignore
         const formattedDate = new Intl.DateTimeFormat('en-US', options).format(currentDate);

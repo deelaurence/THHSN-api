@@ -23,10 +23,23 @@ const store = new Store();
 const dateFormat=store.formatDate
 
 
+// async function bulkUpdatePayments() {
+//   try {
+//       const result = await Payment.updateMany(
+//           {}, // Empty filter updates all documents
+//           { $set: { deliveryStatus: 'pending' } } // Adds or updates deliveryStatus
+//       );
+//       console.log(`${result.modifiedCount} payments updated successfully.`);
+//   } catch (error) {
+//       console.error('Error updating payments:', error);
+//   }
+// }
+
+// // Call the function
+// bulkUpdatePayments();
 export const chargePayment = async (req:Request, res:Response) => {
-  
   try {
-    // Create a new transaction
+    // Create a new transaction 
     
     const userId = req.decoded?.id;
     const user = await BaseUser.findOne({ _id: userId });

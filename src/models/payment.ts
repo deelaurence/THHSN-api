@@ -156,11 +156,32 @@ const descriptionSchema = new mongoose.Schema({
 const paymentSchema = new mongoose.Schema({
     owner: {
         type: String,
-        required: true
-    },
+        required: true 
+    }, 
     amount: {
         type: Number,
         required: true
+    },
+    deliveryStatus:{
+        type: String,
+        enum:['pending','dispatched','shipped','ready'],
+        default:"pending"
+    },
+    deliveryTimeline: [ 
+        { 
+            status: {
+                type: String,
+                enum: ["pending", "dispatched", "shipped", "ready"],
+                required: true
+            },
+            time: {
+                type: String,
+                required: true
+            }
+        }
+    ],
+    deliveryMessage:{
+        type: String,
     },
     merchant: {
         type: String,

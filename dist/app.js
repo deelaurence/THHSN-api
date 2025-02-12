@@ -45,7 +45,7 @@ app.use((0, express_session_1.default)({
     saveUninitialized: false,
 }));
 app.use((0, cors_1.default)({
-    origin: ['https://www.thehumanhairshopng.com', 'https://thehumanhairshopng.com', 'http://localhost:9787', 'https://wake-up-server-8pcm.onrender.com'],
+    origin: ['https://www.thehumanhairshopng.com', 'https://thehumanhairshopng.com', 'http://localhost:5173', 'https://wake-up-server-8pcm.onrender.com'],
     credentials: true
 }));
 app.use((0, morgan_1.default)("dev"));
