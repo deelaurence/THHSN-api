@@ -53,7 +53,7 @@ const ProductSchema = new Schema<IProductType>({
     },
     softDeleted:{
       type: Boolean,
-      default: false
+      default: false 
     },
     category: {
       type: String,
@@ -61,7 +61,7 @@ const ProductSchema = new Schema<IProductType>({
     },
     description: {
       type: String,
-    },
+    }, 
     bestSeller:{
       type:Boolean,
       default:false,

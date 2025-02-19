@@ -175,6 +175,7 @@ export const webhookVerification = async (req:Request, res:Response) => {
 }
 }; 
 
+
 // Handle the callback URL
 export const verifyPaymentCallback = async (req:Request, res:Response) => {
   try {
@@ -199,17 +200,17 @@ export const verifyPaymentCallback = async (req:Request, res:Response) => {
       const reference = response.data.data.reference;
       res.redirect(
         `${clientUrl}/receipt?amount=${amount}&description=${JSON.stringify(description)}&reference=${reference}&name=${name}`
-      );
+      ); 
     } else {
-      // Payment is not successful
+      // Payment is not successful 
       // Do something here (e.g., display an error message, handle failed payment)
       console.log("Payment not successful");
     }
-  } catch (error) {
+  } catch (error) {  
     console.error("Verification error:", error);
     res.status(500).send("Verification error");
   }
-};
+}; 
 
 
 
@@ -217,7 +218,7 @@ export const verifyPaymentCallback = async (req:Request, res:Response) => {
 //   try {
 //     const PaymentId = req.params.id;
 //     let query = {
-//       _id: PaymentId,
+//       _id: PaymentId, 
 //     };
 //     //admin requests have req.decoded
 //     if (req.decoded) {

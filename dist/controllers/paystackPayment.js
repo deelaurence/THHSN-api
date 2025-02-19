@@ -190,7 +190,7 @@ const verifyPaymentCallback = (req, res) => __awaiter(void 0, void 0, void 0, fu
             res.redirect(`${clientUrl}/receipt?amount=${amount}&description=${JSON.stringify(description)}&reference=${reference}&name=${name}`);
         }
         else {
-            // Payment is not successful
+            // Payment is not successful 
             // Do something here (e.g., display an error message, handle failed payment)
             console.log("Payment not successful");
         }
@@ -205,7 +205,7 @@ exports.verifyPaymentCallback = verifyPaymentCallback;
 //   try {
 //     const PaymentId = req.params.id;
 //     let query = {
-//       _id: PaymentId,
+//       _id: PaymentId, 
 //     };
 //     //admin requests have req.decoded
 //     if (req.decoded) {
