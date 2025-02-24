@@ -10,7 +10,6 @@ const user1:UserObject={
   name:'Poco Lee',
   password:'supersecret',
   newPassword:'unsupersecret'
-
 }
 
 

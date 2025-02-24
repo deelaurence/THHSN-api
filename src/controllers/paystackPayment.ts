@@ -13,6 +13,7 @@ import { BadRequest, NotFound, Unauthenticated, InternalServerError, Conflict } 
 import { hotError } from "../errors/hotError";
 
 import crypto from "crypto";
+import { BaseProduct } from "../models/products";
 
 const secretKey = process.env.paystack_key;
 const clientUrl = process.env.CLIENT_URL
@@ -63,7 +64,6 @@ export const chargePayment = async (req:Request, res:Response) => {
         throw new BadRequest("Supply description and amount")
     }
  
-    console.log(req.body)
 
     const transaction = await _paystack.transaction.initialize({
       amount:grandTotal, // Amount in kobo (100000 kobo = ₦1,000)
@@ -74,6 +74,9 @@ export const chargePayment = async (req:Request, res:Response) => {
       },
     });
     
+    // console.log(req.body) 
+    // return
+
     // Redirect )the customer to the payment page
     res.json(successResponse(
         {redirect:transaction.data.authorization_url},
@@ -108,7 +111,7 @@ export const webhookVerification = async (req:Request, res:Response) => {
     res.status(400).send("Invalid signature");
     return;
   }
-
+  
   // Process the webhook event
   const event = req.body;
   const eventType = event.event;
@@ -121,20 +124,39 @@ export const webhookVerification = async (req:Request, res:Response) => {
   const payloadAuth = eventData.authorization.authorization_code;
   // Handle the event based on the event type
   if (eventType === "charge.success") {
-    // const payingUser = await BaseUser.findOne({ email: payloadEmail });
-    // save eventData to db
+    // Find the paying user
+    const payingUser = await BaseUser.findOne({ email: payloadEmail });
+
+    // Save eventData to db
     await Payment.create({
       owner: payloadEmail,
       id: uuidv4(),
       name: payloadName,
-      merchant:"paystack",
+      merchant: "paystack",
       date: dateFormat(),
       status: "Success",
-      paystackAuthorization:payloadAuth,
+      paystackAuthorization: payloadAuth,
       amount: payloadAmount / 100,
       description: payloadDescription,
       reference: payloadReference,
     });
+
+    // Subtract from stock
+    const cartItems = payloadDescription.cart;
+    for (const item of cartItems) {
+      const product = await BaseProduct.findOne({ name: item.name });
+      if (product) {
+        const variation = product.variations.find(v => v.name === item.variant.type);
+        if (variation) {
+          const subVariation = variation.variations.find(v => v.variation === item.variant.name);
+          if (subVariation) {
+            console.log(subVariation, item.quantity);
+            subVariation.quantity -= item.quantity;
+            await product.save();
+          }
+        }
+      }
+    }
 
   } else if (eventType === "charge.failed") {
     await Payment.create({

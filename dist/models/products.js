@@ -28,6 +28,10 @@ const ProductSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false
     },
+    outOfStock: {
+        type: Boolean,
+        default: false
+    },
     category: {
         type: String,
         required: [true, "Supply Product Category"]

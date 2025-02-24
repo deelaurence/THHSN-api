@@ -36,6 +36,7 @@ interface IProductType extends Document {
   name: string;
   category: string;
   description:string;
+  outOfStock:boolean;
   quantity:number;
   price:number;
   softDeleted:boolean;
@@ -52,6 +53,10 @@ const ProductSchema = new Schema<IProductType>({
       required:[true,"Supply Product Name"]
     },
     softDeleted:{
+      type: Boolean,
+      default: false 
+    },
+    outOfStock:{
       type: Boolean,
       default: false 
     },

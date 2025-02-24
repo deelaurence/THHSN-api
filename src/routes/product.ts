@@ -13,6 +13,7 @@ import {
   updateExchangeRate,
   getProductDrafts,
   getProducts,
+  outOfStock,
   getExchangeRate
 } from '../controllers/products'; // Adjust the path as needed
 
@@ -35,6 +36,7 @@ router.put('/product/name-and-description/:id', adminAuth, updateProductNameAndD
 
 router.put('/product/variant/:id', adminAuth, updateProductVariation);
 
+router.put('/product/out-of-stock/:id', adminAuth, outOfStock);
 router.put('/product/bestseller-newarrival/:id', adminAuth, updateProductBestsellerAndNewArrival);
 
 router.put('/product/bestseller-newarrival-coverimage/:id', adminAuth, bestsellerAndNewArrivalCoverImage);

@@ -305,6 +305,26 @@ const deleteProduct = async (req: Request, res: Response) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError(error.message));
   }
 };
+// Out of stock
+const outOfStock = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const outOfStock = req.body.outOfStock;
+    const osProduct = await BaseProduct.findByIdAndUpdate(id,{outOfStock});
+
+    if (!osProduct) {
+      throw new NotFound('Product not found');
+    }
+
+    if(outOfStock){
+      return res.status(StatusCodes.OK).json(successResponse({}, StatusCodes.OK, 'Product out of stock'));
+    }
+    res.status(StatusCodes.OK).json(successResponse({}, StatusCodes.OK, 'Product restocked'));
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError(error.message));
+  }
+};
 
 export {
   addProduct,
@@ -313,6 +333,7 @@ export {
   updateExchangeRate,
   getExchangeRate,
   getProductDrafts,
+  outOfStock,
   updateProductNameAndDescription,
   updateProductBestsellerAndNewArrival,
   bestsellerAndNewArrivalCoverImage,

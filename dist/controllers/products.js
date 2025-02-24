@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProducts = exports.deleteProduct = exports.updateProductVariation = exports.updateProductImage = exports.bestsellerAndNewArrivalCoverImage = exports.updateProductBestsellerAndNewArrival = exports.updateProductNameAndDescription = exports.getProductDrafts = exports.getExchangeRate = exports.updateExchangeRate = exports.setExchangeRate = exports.getProduct = exports.addProduct = void 0;
+exports.getProducts = exports.deleteProduct = exports.updateProductVariation = exports.updateProductImage = exports.bestsellerAndNewArrivalCoverImage = exports.updateProductBestsellerAndNewArrival = exports.updateProductNameAndDescription = exports.outOfStock = exports.getProductDrafts = exports.getExchangeRate = exports.updateExchangeRate = exports.setExchangeRate = exports.getProduct = exports.addProduct = void 0;
 const products_1 = require("../models/products");
 const http_status_codes_1 = require("http-status-codes");
 const customErrors_1 = require("../errors/customErrors");
@@ -289,3 +289,23 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.deleteProduct = deleteProduct;
+// Out of stock
+const outOfStock = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const outOfStock = req.body.outOfStock;
+        const osProduct = yield products_1.BaseProduct.findByIdAndUpdate(id, { outOfStock });
+        if (!osProduct) {
+            throw new customErrors_1.NotFound('Product not found');
+        }
+        if (outOfStock) {
+            return res.status(http_status_codes_1.StatusCodes.OK).json((0, customResponse_1.successResponse)({}, http_status_codes_1.StatusCodes.OK, 'Product out of stock'));
+        }
+        res.status(http_status_codes_1.StatusCodes.OK).json((0, customResponse_1.successResponse)({}, http_status_codes_1.StatusCodes.OK, 'Product restocked'));
+    }
+    catch (error) {
+        console.error(error.message);
+        res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json(new customErrors_1.InternalServerError(error.message));
+    }
+});
+exports.outOfStock = outOfStock;

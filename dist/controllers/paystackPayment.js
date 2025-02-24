@@ -25,6 +25,7 @@ const payment_1 = __importDefault(require("../models/payment"));
 const customErrors_1 = require("../errors/customErrors");
 const hotError_1 = require("../errors/hotError");
 const crypto_1 = __importDefault(require("crypto"));
+const products_1 = require("../models/products");
 const secretKey = process.env.paystack_key;
 const clientUrl = process.env.CLIENT_URL;
 const _paystack = (0, paystack_1.default)(secretKey);
@@ -65,7 +66,6 @@ const chargePayment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (!grandTotal) {
             throw new customErrors_1.BadRequest("Supply description and amount");
         }
-        console.log(req.body);
         const transaction = yield _paystack.transaction.initialize({
             amount: grandTotal, // Amount in kobo (100000 kobo = ₦1,000)
             email: user.email,
@@ -74,6 +74,8 @@ const chargePayment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 name: user.name || user.firstName || user.lastName || "Anonymous",
             },
         });
+        // console.log(req.body) 
+        // return
         // Redirect )the customer to the payment page
         res.json((0, customResponse_1.successResponse)({ redirect: transaction.data.authorization_url }, 200, "Succesfully Initialized payment"));
     }
@@ -112,8 +114,9 @@ const webhookVerification = (req, res) => __awaiter(void 0, void 0, void 0, func
         const payloadAuth = eventData.authorization.authorization_code;
         // Handle the event based on the event type
         if (eventType === "charge.success") {
-            // const payingUser = await BaseUser.findOne({ email: payloadEmail });
-            // save eventData to db
+            // Find the paying user
+            const payingUser = yield user_1.BaseUser.findOne({ email: payloadEmail });
+            // Save eventData to db
             yield payment_1.default.create({
                 owner: payloadEmail,
                 id: (0, uuid_1.v4)(),
@@ -126,6 +129,22 @@ const webhookVerification = (req, res) => __awaiter(void 0, void 0, void 0, func
                 description: payloadDescription,
                 reference: payloadReference,
             });
+            // Subtract from stock
+            const cartItems = payloadDescription.cart;
+            for (const item of cartItems) {
+                const product = yield products_1.BaseProduct.findOne({ name: item.name });
+                if (product) {
+                    const variation = product.variations.find(v => v.name === item.variant.type);
+                    if (variation) {
+                        const subVariation = variation.variations.find(v => v.variation === item.variant.name);
+                        if (subVariation) {
+                            console.log(subVariation, item.quantity);
+                            subVariation.quantity -= item.quantity;
+                            yield product.save();
+                        }
+                    }
+                }
+            }
         }
         else if (eventType === "charge.failed") {
             yield payment_1.default.create({

@@ -47,7 +47,6 @@ app.use(cors({
   credentials:true
 }))
 
-
 app.use(morgan("dev"))
 // Initialize passport middleware
 app.use(passport.initialize());
