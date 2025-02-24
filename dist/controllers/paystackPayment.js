@@ -131,20 +131,27 @@ const webhookVerification = (req, res) => __awaiter(void 0, void 0, void 0, func
             });
             // Subtract from stock
             const cartItems = payloadDescription.cart;
+            //@ts-ignore
+            const productNames = cartItems.map(item => item.name);
+            // Fetch all necessary products in one query
+            const products = yield products_1.BaseProduct.find({ name: { $in: productNames } });
             for (const item of cartItems) {
-                const product = yield products_1.BaseProduct.findOne({ name: item.name });
+                const product = products.find(p => p.name === item.name);
                 if (product) {
                     const variation = product.variations.find(v => v.name === item.variant.type);
                     if (variation) {
                         const subVariation = variation.variations.find(v => v.variation === item.variant.name);
                         if (subVariation) {
-                            console.log(subVariation, item.quantity);
-                            subVariation.quantity -= item.quantity;
-                            yield product.save();
+                            if (subVariation.quantity >= item.quantity) {
+                                subVariation.quantity -= item.quantity;
+                            }
                         }
                     }
                 }
             }
+            // Save all changes at once
+            yield Promise.all(products.map(p => p.save()));
+            console.log(products);
         }
         else if (eventType === "charge.failed") {
             yield payment_1.default.create({
