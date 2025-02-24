@@ -142,21 +142,31 @@ export const webhookVerification = async (req:Request, res:Response) => {
     });
 
     // Subtract from stock
-    const cartItems = payloadDescription.cart;
-    for (const item of cartItems) {
-      const product = await BaseProduct.findOne({ name: item.name });
-      if (product) {
-        const variation = product.variations.find(v => v.name === item.variant.type);
-        if (variation) {
-          const subVariation = variation.variations.find(v => v.variation === item.variant.name);
-          if (subVariation) {
-            console.log(subVariation, item.quantity);
+  const cartItems = payloadDescription.cart;
+  //@ts-ignore
+  const productNames = cartItems.map(item => item.name);
+
+  // Fetch all necessary products in one query
+  const products = await BaseProduct.find({ name: { $in: productNames } });
+
+  for (const item of cartItems) {
+    const product = products.find(p => p.name === item.name);
+    if (product) {
+      const variation = product.variations.find(v => v.name === item.variant.type);
+      if (variation) {
+        const subVariation = variation.variations.find(v => v.variation === item.variant.name);
+        if (subVariation) {
+          if (subVariation.quantity >= item.quantity) {
             subVariation.quantity -= item.quantity;
-            await product.save();
           }
         }
       }
     }
+}
+
+// Save all changes at once
+await Promise.all(products.map(p => p.save()));
+console.log(products)
 
   } else if (eventType === "charge.failed") {
     await Payment.create({
