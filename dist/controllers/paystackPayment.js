@@ -25,7 +25,7 @@ const payment_1 = __importDefault(require("../models/payment"));
 const customErrors_1 = require("../errors/customErrors");
 const hotError_1 = require("../errors/hotError");
 const crypto_1 = __importDefault(require("crypto"));
-const products_1 = require("../models/products");
+const updateStock_1 = require("../utils/updateStock");
 const secretKey = process.env.paystack_key;
 const clientUrl = process.env.CLIENT_URL;
 const _paystack = (0, paystack_1.default)(secretKey);
@@ -129,29 +129,7 @@ const webhookVerification = (req, res) => __awaiter(void 0, void 0, void 0, func
                 description: payloadDescription,
                 reference: payloadReference,
             });
-            // Subtract from stock
-            const cartItems = payloadDescription.cart;
-            //@ts-ignore
-            const productNames = cartItems.map(item => item.name);
-            // Fetch all necessary products in one query
-            const products = yield products_1.BaseProduct.find({ name: { $in: productNames } });
-            for (const item of cartItems) {
-                const product = products.find(p => p.name === item.name);
-                if (product) {
-                    const variation = product.variations.find(v => v.name === item.variant.type);
-                    if (variation) {
-                        const subVariation = variation.variations.find(v => v.variation === item.variant.name);
-                        if (subVariation) {
-                            if (subVariation.quantity >= item.quantity) {
-                                subVariation.quantity -= item.quantity;
-                            }
-                        }
-                    }
-                }
-            }
-            // Save all changes at once
-            yield Promise.all(products.map(p => p.save()));
-            console.log(products);
+            yield (0, updateStock_1.updateStockAfterPayment)(payloadDescription);
         }
         else if (eventType === "charge.failed") {
             yield payment_1.default.create({
